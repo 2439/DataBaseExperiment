@@ -5,6 +5,7 @@
       <w>mysqlconnector</w>
       <w>sqlalchemy</w>
       <w>tablename</w>
+      <w>userinfo</w>
     </words>
   </dictionary>
 </component>
