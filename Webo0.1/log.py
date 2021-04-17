@@ -27,12 +27,12 @@ def login():
         usernames = cursor.fetchall()
 
         for user in usernames:
-            if request.form['username'] == user[0]:
+            if username == user[0]:
                 cursor.execute('select myPassword from test where username=%s', (user[0],))
 
-                pw=cursor.fetchall()    # 从test表中获取密码
+                pw = cursor.fetchall()    # 从test表中获取密码
 
-                if request.form['password'] == pw[0][0]:  # 如果页面输入的password匹配test表返回的密码
+                if password == pw[0][0]:  # 如果页面输入的password匹配test表返回的密码
                     return '<h>欢迎回来,%s！</h>' % user[0]
 
                 return '<h>账号、密码错误！</h>'
