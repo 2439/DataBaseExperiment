@@ -36,7 +36,7 @@ create index index_article on article
 create table article_type
 (
    type_id              int not null auto_increment,
-   type_name            char(4) not null,
+   type_name            char(4) not null unique,
    primary key (type_id)
 );
 
@@ -159,34 +159,34 @@ select
     article.article_title,
     article.article_text,
     userInfo.user_name,
-    out_message.message_time,
-    praise_count.praise_num,
-    comment_count.comment_num
+    out_message.message_time
 from article,
     article_type,
     out_message,
-    userInfo,
-    (select 
-        praise.message_id as message_id, 
-        count(praise.user_id) as praise_num
-     from praise
-     group by praise.message_id
-     ) as praise_count,
-     
-    (select
-        comment_the.article_id as article_id,
-        count(comment_the.comment_id) as comment_num
-     from comment_the
-     group by comment_the.article_id
-     ) as comment_count
-     
+    userInfo   
 where
-    comment_count.article_id = article.article_id
-    and praise_count.message_id = article.message_id
-    and userInfo.user_id = out_message.user_id
+	userInfo.user_id = out_message.user_id
     and article_type.type_id = article.type_id
     and out_message.message_id = article.message_id;
-
+/*==============================================================*/
+/* View: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!comment and praise */
+/*==============================================================*/
+create VIEW message_praise
+as
+select 
+	praise.message_id as message_id, 
+	count(praise.user_id) as praise_num
+ from praise
+ group by praise.message_id;
+ 
+create VIEW article_comment
+as
+select
+	comment_the.article_id as message_id,
+	count(comment_the.comment_id) as comment_num
+from comment_the
+group by comment_the.article_id;
+ 
 alter table article add constraint FK_article_type foreign key (type_id)
       references article_type (type_id) on delete restrict on update restrict;
 

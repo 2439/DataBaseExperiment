@@ -3,6 +3,7 @@
     <words>
       <w>endblock</w>
       <w>mysqlconnector</w>
+      <w>newtime</w>
       <w>sqlalchemy</w>
       <w>tablename</w>
       <w>userinfo</w>
