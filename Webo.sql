@@ -130,7 +130,6 @@ create table userInfo
    user_password        varchar(20) not null,
    user_state           bool not null,
    user_register        datetime not null,
-   user_say             char(30),
    primary key (user_id)
 );
 
@@ -140,11 +139,12 @@ create table userInfo
 create table user_detail
 (
    user_detail_id       int not null auto_increment,
-   user_id              int not null,
-   user_sex             bool not null,
-   user_text            text,
-   user_email           char(15),
+   user_id              int not null unique,
+   user_sex             enum('男', '女') NOT NULL default '男',
+   user_birthday		date,
+   user_email           char(15) check (user_email like '%@%'),
    user_address         char(10),
+   user_text            text,
    primary key (user_detail_id)
 );
 

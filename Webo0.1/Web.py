@@ -84,12 +84,6 @@ def index(choose):
                                types=sql_article_type(),
                                lists=sql_article()
                                )
-    if choose == 'user':
-        return render_template('index.html',
-                               user=session.get('user_name'),
-                               types=sql_article_type(),
-                               lists=sql_article()
-                               )
     lists = sql_select("select * "
                        "from article_detail "
                        "where type_name='%s' "
@@ -129,9 +123,51 @@ def make_article():
     return render_template('index.html', user=username, types=sql_article_type(), lists=sql_article())
 
 
-@app.route('/detail/<article_id>', methods=['POST', 'GET'])     # 微博详细内容
+@app.route('/user_detail/<user_name>', methods=['POST', 'GET'])
 @login_required
-def detail(article_id):
+def user_detail(user_name):
+    print(11111111111)
+    choose = request.args.get('choose')
+
+    if choose is None:
+        choose = 'detail'
+
+    if choose == 'detail':  # 显示用户信息
+        detail = sql_select("select * "
+                            "from user_detail, userinfo "
+                            "where userinfo.user_name = '%s' "
+                            "and userinfo.user_id = user_detail.user_id "
+                            % (user_name, ))
+        return render_template('user_detail.html',
+                               user=session.get('user_name'),
+                               types=sql_article_type(),
+                               host=user_name,
+                               choose='detail',
+                               detail=detail)
+
+    if choose == 'remake':  # 修改用户信息
+        print(222222222222222)
+        detail = sql_select("select * "
+                            "from user_detail, userinfo "
+                            "where userinfo.user_name = '%s' "
+                            "and userinfo.user_id = user_detail.user_id "
+                            % (user_name, ))
+        return render_template('user_detail.html',
+                               user=session.get('user_name'),
+                               types=sql_article_type(),
+                               host=user_name,
+                               choose='remake',
+                               detail=detail)
+
+    return render_template('user_detail.html',
+                           user=session.get('user_name'),
+                           types=sql_article_type(),
+                           host=user_name)
+
+
+@app.route('/article_detail/<article_id>', methods=['POST', 'GET'])     # 微博详细内容
+@login_required
+def article_detail(article_id):
     print(article_id)
     return render_template('detail.html')
 

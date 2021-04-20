@@ -54,7 +54,7 @@
       </form>
       <ul class="nav navbar-nav navbar-right">
           {% if user %}
-            <li><a href="{{ url_for('index',choose='user') }}" >{{ user }}</a></li>
+            <li><a href="{{ url_for('user_detail',user_name=user) }}" >{{ user }}</a></li>
             <li><a href="{{ url_for('logout') }}">退出登录</a></li>
           {% else %}
             <li><a href="{{ url_for('login') }}">登录</a></li>
