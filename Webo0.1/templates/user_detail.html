@@ -30,14 +30,11 @@
             {% if choose == 'detail' %}
                 <div class="form-container" style="width:300px;margin:0 auto">
                     <div class="form-group"><ul>昵称：{{ host }}</ul></div>
-                    <ul>
-                        <li>昵称：{{ host }}</li>
-                        <li>性别：{{ user_sex }}</li>
-                        <li>生日：{{ user_birthday }}</li>
-                        <li>邮箱：{{ user_email}}</li>
-                        <li>地区：{{ user_address }}</li>
-                        <li>简介：{{ user_text }}</li>
-                    </ul>
+                    <div class="form-group"><ul>性别：{{ user_sex }}</ul></div>
+                    <div class="form-group"><ul>生日：{{ user_birthday }}</ul></div>
+                    <div class="form-group"><ul>邮箱：{{ user_email}}</ul></div>
+                    <div class="form-group"><ul>地区：{{ user_address }}</ul></div>
+                    <div class="form-group"><ul>简介：{{ user_text }}</ul></div>
                     {% if user == host %}
                         <div class="form-group">
                             <a href="{{ url_for('user_detail',user_name=host,choose='remake') }}">
@@ -46,6 +43,46 @@
                         </div>
                     {% endif %}
                 </div>
+            {% endif %}
+
+            {% if choose == 'remake' %}
+                <form action="" method="POST">
+                    <div class="form-container" style="width:300px;margin:0 auto">
+                        <h4 style="color: red; text-align: center" id="errMessage">{{ text }}</h4>
+                        <div class="form-group">
+                            昵称：{{ host }}
+                        </div>
+                        <div class="form-group">
+                            性别：
+                            {% if user_sex == "男" %}
+                                <input type="radio" name="user_sex" value="男" checked>男
+                                <input type="radio" name="user_sex" value="女">女
+                            {% else %}
+                                <input type="radio" name="user_sex" value="男" >男
+                                <input type="radio" name="user_sex" value="女" checked>女
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            生日：
+                            <input type="date" class="form-control" name="user_birthday" value="{{ user_birthday }}">
+                        </div>
+                        <div class="form-group">
+                            邮箱：
+                            <input type="email" class="form-control" name="user_email" value="{{ user_email }}">
+                        </div>
+                        <div class="form-group">
+                            地区：
+                            <input type="text" class="form-control" name="user_address" value="{{ user_address }}" maxlength="10" >
+                        </div>
+                        <div class="form-group">
+                            简介：
+                            <input type="text" class="form-control" name="user_text" value="{{ user_text }}">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary btn-block">确认</button>
+                        </div>
+                    </div>
+                </form>
             {% endif %}
         </div>
     </div>

@@ -15,12 +15,12 @@
     );
 </script>
 
-<form action="" method="post">
+<form action="" method="POST">
     <h3 class="page-title" style="text-align:center">发布微博</h3>
     <div class="form-container" style="width:500px;margin:0 auto;text-align:right;">
         <h4 style="color: red; text-align: center" id="errMessage">{{ text }}</h4>
         <div class="form-group">
-            <input type="text" placeholder="请输入标题" name="title" class="form-control">
+            <input type="text" placeholder="请输入标题" name="title" class="form-control" maxlength="20">
         </div>
         <div class="form-group">
             <textarea name="content" rows="6" class="form-control" placeholder="请输入内容"></textarea>

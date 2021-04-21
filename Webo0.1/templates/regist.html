@@ -19,10 +19,10 @@
         <div class="form-container" style="width:300px;margin:0 auto">
             <h4 style="color: red; text-align: center" id="errMessage">{{ text }}</h4>
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="用户名" name="username" value={{username}}>
+                <input type="text" class="form-control" placeholder="用户名" name="username" maxlength="10">
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" placeholder="密码" name="password1">
+                <input type="password" class="form-control" placeholder="密码" name="password1" maxlength="20">
             </div>
             <div class="form-group">
                 <input type="password" class="form-control" placeholder="确认密码" name="password2">

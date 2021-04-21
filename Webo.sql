@@ -17,7 +17,7 @@ create table article
    message_id           int not null,
    type_id              int not null,
    repeat_message_id    int,
-   article_title        char(20),
+   article_title        char(50),
    article_text         text not null,
    primary key (article_id)
 );
@@ -81,7 +81,7 @@ create table group_user
 (
    group_id             int not null auto_increment,
    user_id              int not null,
-   group_name           char(10) not null,
+   group_name           char(20) not null,
    primary key (group_id)
 );
 
@@ -142,32 +142,12 @@ create table user_detail
    user_id              int not null unique,
    user_sex             enum('男', '女') NOT NULL default '男',
    user_birthday		date,
-   user_email           char(15) check (user_email like '%@%'),
-   user_address         char(10),
+   user_email           char(20) check (user_email like '%@%.com'),
+   user_address         char(30),
    user_text            text,
    primary key (user_detail_id)
 );
 
-/*==============================================================*/
-/* View: article_detail                                         */
-/*==============================================================*/
-create  VIEW      article_detail
-  as
-select 
-    article.article_id,
-    article_type.type_name,
-    article.article_title,
-    article.article_text,
-    userInfo.user_name,
-    out_message.message_time
-from article,
-    article_type,
-    out_message,
-    userInfo   
-where
-	userInfo.user_id = out_message.user_id
-    and article_type.type_id = article.type_id
-    and out_message.message_id = article.message_id;
 /*==============================================================*/
 /* View: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!comment and praise */
 /*==============================================================*/
@@ -179,13 +159,55 @@ select
  from praise
  group by praise.message_id;
  
-create VIEW article_comment
-as
-select
-	comment_the.article_id as message_id,
+/*==============================================================*/
+/* View: article_detail                                         */
+/*==============================================================*/
+create  VIEW      article_detail
+  as
+select 
+	b.article_id,
+    b.type_name,
+    b.article_title,
+    b.article_text,
+    b.user_name,
+    b.message_time,
+    b.praise_num,
+    c.comment_num
+from
+	(select a.article_id,
+		a.type_name,
+		a.article_title,
+		a.article_text,
+		a.user_name,
+		a.message_time,
+		message_praise.praise_num
+	from
+		(select 
+			article.article_id,
+			article.message_id,
+			article_type.type_name,
+			article.article_title,
+			article.article_text,
+			userInfo.user_name,
+			out_message.message_time
+		from article,
+			article_type,
+			out_message,
+			userInfo
+		where
+			userInfo.user_id = out_message.user_id
+			and article_type.type_id = article.type_id
+			and out_message.message_id = article.message_id) as a
+	left outer join
+		message_praise
+	on  message_praise.message_id = a.message_id) as b
+left outer join
+	 (select
+	comment_the.article_id as article_id,
 	count(comment_the.comment_id) as comment_num
-from comment_the
-group by comment_the.article_id;
+	from comment_the
+	group by comment_the.article_id) as c
+on c.article_id = b.article_id;
  
 alter table article add constraint FK_article_type foreign key (type_id)
       references article_type (type_id) on delete restrict on update restrict;

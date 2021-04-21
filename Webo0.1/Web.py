@@ -12,6 +12,11 @@ app = Flask(__name__)     # 引入Flask
 app.config['SECRET_KEY'] = os.urandom(24)
 
 
+def test():
+    print(111111111111)
+    return False
+
+
 @app.route('/', methods=['GET'])     # 跳转至login.html，请求方式GET
 def show():
     return render_template('login.html')
@@ -31,7 +36,7 @@ def login():
         if pw:
             if password == pw:
                 session['user_name'] = username
-                return render_template('index.html', user=username, types=sql_article_type(), lists=sql_article())
+                return index('all')
             return render_template('login.html', text="密码错误")
         return render_template('login.html', text="用户名不存在")
 
@@ -66,6 +71,7 @@ def logout():
     return render_template('login.html')
 
 
+# 1111111111111111111111111111111111
 @app.route('/index/<choose>', methods=['POST', 'GET'])    # 首页
 @login_required
 def index(choose):
@@ -73,6 +79,7 @@ def index(choose):
         choose = 'all'
 
     if choose == 'all':
+        print(sql_article())
         return render_template('index.html',
                                user=session.get('user_name'),
                                types=sql_article_type(),
@@ -84,6 +91,27 @@ def index(choose):
                                types=sql_article_type(),
                                lists=sql_article()
                                )
+
+    if choose == 'find_message':
+        if request.method == 'GET':
+            return render_template('index.html',
+                                   user=session.get('user_name'),
+                                   types=sql_article_type(),
+                                   lists=sql_article()
+                                   )
+        else:
+            find_message = request.form['find_article']
+            lists = sql_select("select * "
+                               "from article_detail "
+                               "where article_title like '%%%s%%' "
+                               "or article_text like '%%%s%%' "
+                               % (find_message, find_message, ))
+            return render_template('index.html',
+                                   user=session.get('user_name'),
+                                   types=sql_article_type(),
+                                   lists=lists
+                                   )
+
     lists = sql_select("select * "
                        "from article_detail "
                        "where type_name='%s' "
@@ -120,13 +148,13 @@ def make_article():
         sql_commit("insert into article(message_id, type_id, article_title, article_text) "
                    "values(%d, %d, '%s', '%s') "
                    % (message_id, type_id, title, content))
-    return render_template('index.html', user=username, types=sql_article_type(), lists=sql_article())
+    return index('all')
 
 
+# 1111111111111111111111111111111111
 @app.route('/user_detail/<user_name>', methods=['POST', 'GET'])
 @login_required
 def user_detail(user_name):
-    print(11111111111)
     choose = request.args.get('choose')
 
     if choose is None:
@@ -145,10 +173,10 @@ def user_detail(user_name):
                                    host=user_name,
                                    choose='detail',
                                    user_sex=detail[0][2],
-                                   user_birthday=detail[0][3],
-                                   user_email=detail[0][4],
-                                   user_address=detail[0][5],
-                                   user_text=detail[0][6])
+                                   user_birthday=detail[0][3] if detail[0][3] else "无",
+                                   user_email=detail[0][4] if detail[0][4] else "无",
+                                   user_address=detail[0][5] if detail[0][5] else "无",
+                                   user_text=detail[0][6] if detail[0][6] else "无")
         else:
             return render_template('user_detail.html',
                                    user=session.get('user_name'),
@@ -162,34 +190,57 @@ def user_detail(user_name):
                                    user_text='无')
 
     if choose == 'remake':  # 修改用户信息
-        print(222222222222222)
-        detail = sql_select("select * "
-                            "from user_detail, userinfo "
-                            "where userinfo.user_name = '%s' "
-                            "and userinfo.user_id = user_detail.user_id "
-                            % (user_name, ))
+        if request.method == 'GET':
+            detail = sql_select("select * "
+                                "from user_detail, userinfo "
+                                "where userinfo.user_name = '%s' "
+                                "and userinfo.user_id = user_detail.user_id "
+                                % (user_name, ))
 
-        if detail:
-            print(33333333333)
-            user_sex = detail[2]
-            user_birthday = detail[3]
-            user_email = detail[4]
-            user_address = detail[5]
-            user_text = detail[6]
+            if detail:
+                return render_template('user_detail.html',
+                                       user=session.get('user_name'),
+                                       types=sql_article_type(),
+                                       host=user_name,
+                                       choose='remake',
+                                       user_sex=detail[0][2],
+                                       user_birthday=detail[0][3] if detail[0][3] else "",
+                                       user_email=detail[0][4] if detail[0][4] else "",
+                                       user_address=detail[0][5] if detail[0][5] else "",
+                                       user_text=detail[0][6] if detail[0][6] else "")
+            else:
+                return render_template('user_detail.html',
+                                       user=session.get('user_name'),
+                                       types=sql_article_type(),
+                                       host=user_name,
+                                       choose='remake',
+                                       user_sex='男')
         else:
-            print(444444444444)
-            user_sex = '男'
-            user_birthday = '无'
-            user_email = '无'
-            user_address = '无'
-            user_text = '无'
+            user_sex = request.form['user_sex']
+            user_birthday = request.form['user_birthday']
+            user_email = request.form['user_email']
+            user_address = request.form['user_address']
+            user_text = request.form['user_text']
+            user_id = sql_first_one("user_id", "userinfo", "user_name='"+user_name+"'")
+            sql_commit(
+                "insert into user_detail(user_id, user_sex, user_birthday, user_email, user_address, user_text) "
+                "values(%d, '%s', '%s', '%s', '%s', '%s') "
+                "ON DUPLICATE KEY UPDATE "
+                "user_sex='%s',user_birthday='%s',user_email='%s',user_address='%s',user_text='%s' "
+                % (user_id, user_sex, user_birthday, user_email, user_address, user_text,
+                   user_sex, user_birthday, user_email, user_address, user_text, ))
+            return render_template('user_detail.html',
+                                   user=session.get('user_name'),
+                                   types=sql_article_type(),
+                                   host=user_name,
+                                   choose='detail',
+                                   user_sex=user_sex,
+                                   user_birthday=user_birthday,
+                                   user_email=user_email,
+                                   user_address=user_address,
+                                   user_text=user_text)
 
-        return render_template('user_detail.html',
-                               user=session.get('user_name'),
-                               types=sql_article_type(),
-                               host=user_name,
-                               choose='remake',
-                               detail=detail)
+
 
     return render_template('user_detail.html',
                            user=session.get('user_name'),
@@ -197,6 +248,7 @@ def user_detail(user_name):
                            host=user_name)
 
 
+# 1111111111111111111111111111111111
 @app.route('/article_detail/<article_id>', methods=['POST', 'GET'])     # 微博详细内容
 @login_required
 def article_detail(article_id):
@@ -220,29 +272,35 @@ def article_init():
     return
 
 
+# select获取数据
 def sql_select(sql):
     cursor.execute(sql)
     return cursor.fetchall()
 
 
+# 上传数据
 def sql_commit(sql):
     cursor.execute(sql)
     conn.commit()
     return
 
 
+# 获得最新插入的id
 def sql_identity_id():
     return sql_select("select @@identity")[0][0]
 
 
+# 文章类型
 def sql_article_type():
     return sql_select("select type_name from article_type")
 
 
+# 文章
 def sql_article():
     return sql_select("select * from article_detail order by message_time desc")
 
 
+# 获得第一个的第一个值
 def sql_first_one(id_name, table, equal):
     cursor.execute("select %s "
                    "from %s "
