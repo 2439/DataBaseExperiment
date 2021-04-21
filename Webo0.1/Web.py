@@ -138,12 +138,28 @@ def user_detail(user_name):
                             "where userinfo.user_name = '%s' "
                             "and userinfo.user_id = user_detail.user_id "
                             % (user_name, ))
-        return render_template('user_detail.html',
-                               user=session.get('user_name'),
-                               types=sql_article_type(),
-                               host=user_name,
-                               choose='detail',
-                               detail=detail)
+        if detail:
+            return render_template('user_detail.html',
+                                   user=session.get('user_name'),
+                                   types=sql_article_type(),
+                                   host=user_name,
+                                   choose='detail',
+                                   user_sex=detail[0][2],
+                                   user_birthday=detail[0][3],
+                                   user_email=detail[0][4],
+                                   user_address=detail[0][5],
+                                   user_text=detail[0][6])
+        else:
+            return render_template('user_detail.html',
+                                   user=session.get('user_name'),
+                                   types=sql_article_type(),
+                                   host=user_name,
+                                   choose='detail',
+                                   user_sex='男',
+                                   user_birthday='无',
+                                   user_email='无',
+                                   user_address='无',
+                                   user_text='无')
 
     if choose == 'remake':  # 修改用户信息
         print(222222222222222)
@@ -152,6 +168,22 @@ def user_detail(user_name):
                             "where userinfo.user_name = '%s' "
                             "and userinfo.user_id = user_detail.user_id "
                             % (user_name, ))
+
+        if detail:
+            print(33333333333)
+            user_sex = detail[2]
+            user_birthday = detail[3]
+            user_email = detail[4]
+            user_address = detail[5]
+            user_text = detail[6]
+        else:
+            print(444444444444)
+            user_sex = '男'
+            user_birthday = '无'
+            user_email = '无'
+            user_address = '无'
+            user_text = '无'
+
         return render_template('user_detail.html',
                                user=session.get('user_name'),
                                types=sql_article_type(),

@@ -26,78 +26,26 @@
             <li><a href="{{ url_for('user_detail',user_name=host,choose='comment') }}">评论</a> </li>
             <li><a href="{{ url_for('user_detail',user_name=host,choose='reply') }}">回复</a> </li>
         </ul>
-        <div style="margin-left:100px;list-style:none">
+        <div>
             {% if choose == 'detail' %}
-                {% if detail %}
+                <div class="form-container" style="width:300px;margin:0 auto">
+                    <div class="form-group"><ul>昵称：{{ host }}</ul></div>
                     <ul>
                         <li>昵称：{{ host }}</li>
-                        <li>性别：{{ detail[2] }}</li>
-                        <li>生日：{{ detail[3] }}</li>
-                        <li>邮箱：{{ detail[4] }}</li>
-                        <li>地区：{{ detail[5] }}</li>
-                        <li>简介：{{ detail[6] }}</li>
+                        <li>性别：{{ user_sex }}</li>
+                        <li>生日：{{ user_birthday }}</li>
+                        <li>邮箱：{{ user_email}}</li>
+                        <li>地区：{{ user_address }}</li>
+                        <li>简介：{{ user_text }}</li>
                     </ul>
-                {% else %}
-                    <ul>
-                        <li>昵称：{{ host }}</li>
-                        <li>性别：男</li>
-                        <li>生日：无</li>
-                        <li>邮箱：无</li>
-                        <li>地区：无</li>
-                        <li>简介：无</li>
-                    </ul>
-                {% endif %}
-                {% if user == host %}
-                        <div class="form-container" style="width:100px;margin:0 auto">
+                    {% if user == host %}
+                        <div class="form-group">
                             <a href="{{ url_for('user_detail',user_name=host,choose='remake') }}">
                                 <button class="btn btn-primary btn-block">修改</button>
                             </a>
                         </div>
-                {% endif %}
-            {% endif %}
-
-            {% if choose == 'remake' %}
-                <ul><li>昵称：{{ host }}</li></ul>
-                <form action="/user_detail/{{host}}?choose=update" method="POST">
-                    <div class="form-container" style="width:100px;margin:0 auto">
-                        {% if detail %}
-                            <div class="form-group">
-                                {% if detail[2] == '女': %}
-                                    <input type="radio" name="user_sex" value='男' > 男
-                                    <input type="radio" name="user_sex" value='女' checked> 女
-                                {% else %}
-                                    <input type="radio" name="user_sex" value='男' checked> 男
-                                    <input type="radio" name="user_sex" value='女' > 女
-                                {% endif %}
-                            </div>
-                            <div class="form-group">
-                                生日：
-                                {% if detail[3] %}
-                                    <input type="date" name="user_birthday" value=detail[3] pattern="yyyy-MM-dd">
-                                {% else %}
-                                    <input type="date" name="user_birthday" value="date"  pattern="yyyy-MM-dd">
-                            </div>
-                            <ul>
-                                <li>邮箱：{{ detail[4] }}</li>
-                                <li>地区：{{ detail[5] }}</li>
-                                <li>简介：{{ detail[6] }}</li>
-                            </ul>
-                        {% else %}
-                            <ul>
-                                <li>性别：男</li>
-                                <li>生日：无</li>
-                                <li>邮箱：无</li>
-                                <li>地区：无</li>
-                                <li>简介：无</li>
-                            </ul>
-                        {% endif %}
-                        {% if user==host %}
-                            <div class="form-group">
-                                <button class="btn btn-primary btn-block">确定</button>
-                            </div>
-                        {% endif %}
-                    </div>
-                </form>
+                    {% endif %}
+                </div>
             {% endif %}
         </div>
     </div>
