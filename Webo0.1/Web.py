@@ -12,11 +12,6 @@ app = Flask(__name__)     # 引入Flask
 app.config['SECRET_KEY'] = os.urandom(24)
 
 
-def test():
-    print(111111111111)
-    return False
-
-
 @app.route('/', methods=['GET'])     # 跳转至login.html，请求方式GET
 def show():
     return render_template('login.html')
@@ -79,25 +74,30 @@ def index(choose):
         choose = 'all'
 
     if choose == 'all':
-        print(sql_article())
+        lists = sql_article()
         return render_template('index.html',
                                user=session.get('user_name'),
                                types=sql_article_type(),
-                               lists=sql_article()
+                               lists=lists,
+                               praise=sql_praise_with_lists(lists)
                                )
     if choose == 'focus':
+        lists = sql_article()
         return render_template('index.html',
                                user=session.get('user_name'),
                                types=sql_article_type(),
-                               lists=sql_article()
+                               lists=sql_article(),
+                               praise=sql_praise_with_lists(lists)
                                )
 
     if choose == 'find_message':
         if request.method == 'GET':
+            lists = sql_article()
             return render_template('index.html',
                                    user=session.get('user_name'),
                                    types=sql_article_type(),
-                                   lists=sql_article()
+                                   lists=sql_article(),
+                                   praise=sql_praise_with_lists(lists)
                                    )
         else:
             find_message = request.form['find_article']
@@ -109,7 +109,8 @@ def index(choose):
             return render_template('index.html',
                                    user=session.get('user_name'),
                                    types=sql_article_type(),
-                                   lists=lists
+                                   lists=lists,
+                                   praise=sql_praise_with_lists(lists)
                                    )
 
     lists = sql_select("select * "
@@ -119,7 +120,8 @@ def index(choose):
     return render_template('index.html',
                            user=session.get('user_name'),
                            types=sql_article_type(),
-                           lists=lists
+                           lists=lists,
+                           praise=sql_praise_with_lists(lists)
                            )
 
 
@@ -152,7 +154,7 @@ def make_article():
 
 
 # 1111111111111111111111111111111111
-@app.route('/user_detail/<user_name>', methods=['POST', 'GET'])
+@app.route('/user_detail/<user_name>', methods=['POST', 'GET'])     # 用户详细信息
 @login_required
 def user_detail(user_name):
     choose = request.args.get('choose')
@@ -256,7 +258,7 @@ def article_detail(article_id):
     return render_template('detail.html')
 
 
-def article_type(message):
+def article_type(message):      # 文章类型初始化定义
     sql_commit("insert into article_type(type_name) "
                "values ('%s') "
                "ON DUPLICATE KEY UPDATE type_name='%s'"
@@ -264,7 +266,7 @@ def article_type(message):
     return
 
 
-def article_init():
+def article_init():     # 文章类型初始化定义
     article_type("新闻")
     article_type("明星")
     article_type("生活")
@@ -298,6 +300,25 @@ def sql_article_type():
 # 文章
 def sql_article():
     return sql_select("select * from article_detail order by message_time desc")
+
+
+# 是否点赞
+def sql_praise_with_lists(lists):
+    praise_dict = {}
+    for list_a in lists:
+        user_name = session.get('user_name')
+        praise_do = sql_select("select * "
+                               "from praise,userinfo,article "
+                               "where userinfo.user_name = '%s' "
+                               "and article.article_id = %d "
+                               "and praise.message_id = article.message_id "
+                               "and praise.user_id = userinfo.user_id "
+                               % (user_name, list_a[0], ))
+        if praise_do:
+            praise_dict[list_a[0]] = 1
+        else:
+            praise_dict[list_a[0]] = 0
+    return praise_dict
 
 
 # 获得第一个的第一个值
