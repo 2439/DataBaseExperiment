@@ -34,16 +34,16 @@
                     <div class="info" style="text-align:right;">
                         <span class="praise" style="margin-right:20px;color:grey">
                             {% if praise[list[0]] == 1 %}
-                                已赞（{% if list[6] %}{{ list[6] }}{% else %} 0 {% endif %}）
+                                已赞（{% if list[6] %}{{ list[6] }}{% else %}0{% endif %}）
                             {% else %}
-                                <a href="{{ url_for('user_detail',user_name=list[4]) }}">
-                                    点赞（{% if list[6] %}{{ list[6] }}{% else %} 0 {% endif %}）
+                                <a href="{{ url_for('praise_action',article_id=list[0], choose=choose) }}">
+                                    点赞（{% if list[6] %}{{ list[6] }}{% else %}0{% endif %}）
                                 </a>
                             {% endif %}
                         </span>
                         <span class="comment" style="margin-right:20px;color:grey">
-                            <a>
-                                评论（{% if list[7] %}{{ list[7] }}{% else %} 0 {% endif %}）
+                            <a href="{{ url_for('comment_action',article_id=list[0], choose=choose) }}">
+                                评论（{% if list[7] %}{{ list[7] }}{% else %}0{% endif %}）
                             </a>
                         </span>
                         <span class="author" style="margin-right:20px;color:grey">

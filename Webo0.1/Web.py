@@ -12,12 +12,14 @@ app = Flask(__name__)     # 引入Flask
 app.config['SECRET_KEY'] = os.urandom(24)
 
 
-@app.route('/', methods=['GET'])     # 跳转至login.html，请求方式GET
+# 跳转至login.html，请求方式GET
+@app.route('/', methods=['GET'])
 def show():
     return render_template('login.html')
 
 
-@app.route('/login', methods=['POST', 'GET'])   # 登录
+# 登录
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'GET':
         return render_template('login.html')
@@ -36,7 +38,8 @@ def login():
         return render_template('login.html', text="用户名不存在")
 
 
-@app.route('/regist', methods=['POST', 'GET'])   # 注册
+# 注册
+@app.route('/regist', methods=['POST', 'GET'])
 def regist():
     if request.method == 'GET':
         return render_template('regist.html')
@@ -60,14 +63,16 @@ def regist():
             return render_template('login.html', text="注册成功，请重新登陆")
 
 
-@app.route('/logout', methods=['POST', 'GET'])    # 退出登录
+# 退出登录
+@app.route('/logout', methods=['POST', 'GET'])
 def logout():
     session.pop('user_name')
     return render_template('login.html')
 
 
+# 首页
 # 1111111111111111111111111111111111
-@app.route('/index/<choose>', methods=['POST', 'GET'])    # 首页
+@app.route('/index/<choose>', methods=['POST', 'GET'])
 @login_required
 def index(choose):
     if len(choose) == 0:
@@ -79,7 +84,8 @@ def index(choose):
                                user=session.get('user_name'),
                                types=sql_article_type(),
                                lists=lists,
-                               praise=sql_praise_with_lists(lists)
+                               praise=sql_praise_with_lists(lists),
+                               choose=choose
                                )
     if choose == 'focus':
         lists = sql_article()
@@ -87,7 +93,8 @@ def index(choose):
                                user=session.get('user_name'),
                                types=sql_article_type(),
                                lists=sql_article(),
-                               praise=sql_praise_with_lists(lists)
+                               praise=sql_praise_with_lists(lists),
+                               choose=choose
                                )
 
     if choose == 'find_message':
@@ -97,7 +104,8 @@ def index(choose):
                                    user=session.get('user_name'),
                                    types=sql_article_type(),
                                    lists=sql_article(),
-                                   praise=sql_praise_with_lists(lists)
+                                   praise=sql_praise_with_lists(lists),
+                                   choose=choose
                                    )
         else:
             find_message = request.form['find_article']
@@ -105,23 +113,27 @@ def index(choose):
                                "from article_detail "
                                "where article_title like '%%%s%%' "
                                "or article_text like '%%%s%%' "
+                               "order by message_time desc "
                                % (find_message, find_message, ))
             return render_template('index.html',
                                    user=session.get('user_name'),
                                    types=sql_article_type(),
                                    lists=lists,
-                                   praise=sql_praise_with_lists(lists)
+                                   praise=sql_praise_with_lists(lists),
+                                   choose=choose
                                    )
 
     lists = sql_select("select * "
                        "from article_detail "
                        "where type_name='%s' "
+                       "order by message_time desc "
                        % (choose, ))
     return render_template('index.html',
                            user=session.get('user_name'),
                            types=sql_article_type(),
                            lists=lists,
-                           praise=sql_praise_with_lists(lists)
+                           praise=sql_praise_with_lists(lists),
+                           choose=choose
                            )
 
 
@@ -153,8 +165,9 @@ def make_article():
     return index('all')
 
 
+# 用户详细信息
 # 1111111111111111111111111111111111
-@app.route('/user_detail/<user_name>', methods=['POST', 'GET'])     # 用户详细信息
+@app.route('/user_detail/<user_name>', methods=['POST', 'GET'])
 @login_required
 def user_detail(user_name):
     choose = request.args.get('choose')
@@ -241,21 +254,64 @@ def user_detail(user_name):
                                    user_email=user_email,
                                    user_address=user_address,
                                    user_text=user_text)
-
-
-
     return render_template('user_detail.html',
                            user=session.get('user_name'),
                            types=sql_article_type(),
                            host=user_name)
 
 
+# 微博详细内容
 # 1111111111111111111111111111111111
-@app.route('/article_detail/<article_id>', methods=['POST', 'GET'])     # 微博详细内容
+@app.route('/article_detail/<article_id>', methods=['POST', 'GET'])
 @login_required
 def article_detail(article_id):
     print(article_id)
-    return render_template('detail.html')
+    list_a = sql_select("select * "
+                        "from article_detail "
+                        "where article_id=" + article_id)
+    return render_template('detail.html',
+                           list=list_a[0],
+                           praise=sql_praise_with_lists(list_a))
+
+
+# 点赞
+@app.route('/praise_action/<article_id>/<choose>', methods=['POST', 'GET'])
+@login_required
+def praise_action(article_id, choose):
+    message_id = sql_first_one("message_id", "article", "article_id="+article_id+"")
+    user_id = sql_first_one("user_id", "userinfo", "user_name='"+session.get('user_name')+"'")
+    sql_commit("insert praise(message_id, user_id) "
+               "values(%d, %d) "
+               % (message_id, user_id, ))
+    return index(choose)
+
+
+# 评论
+@app.route('/comment_action/<article_id>/<choose>', methods=['POST', 'GET'])
+@login_required
+def comment_action(article_id, choose):
+    if request.method == 'GET':
+        list_a = sql_select("select * "
+                            "from article_detail "
+                            "where article_id=" + article_id)
+        return render_template('makeComment.html',
+                               list=list_a[0],
+                               praise=sql_praise_with_lists(list_a),
+                               choose=choose,
+                               action="评论")
+    else:
+        comment_text = request.form['content']
+        username = session.get('user_name')
+        user_id = sql_first_one("user_id", "userinfo", "user_name='" + username + "'")
+        time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        sql_commit("insert into out_message(user_id, message_time, message_newtime, message_flag) "
+                   "values (%d, '%s', '%s', %d) "
+                   % (user_id, time, time, 1,))
+        message_id = sql_identity_id()
+        sql_commit("insert into comment_the(message_id, article_id, comment_text) "
+                   "values(%s, %s, '%s') "
+                   % (message_id, article_id, comment_text, ))
+        return index(choose)
 
 
 def article_type(message):      # 文章类型初始化定义
