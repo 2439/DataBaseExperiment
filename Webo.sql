@@ -14,7 +14,7 @@ table  if   exists   article_detail;
 create table article
 (
    article_id           int not null auto_increment,
-   message_id           int not null,
+   message_id           int not null unique,
    type_id              int not null,
    repeat_message_id    int,
    article_title        char(50),
@@ -56,7 +56,7 @@ create table at_the
 create table comment_the
 (
    comment_id           int not null auto_increment,
-   message_id           int not null,
+   message_id           int not null unique,
    article_id           int not null,
    comment_text         text not null,
    primary key (comment_id)
@@ -114,7 +114,7 @@ create table praise
 create table reply
 (
    reply_id             int not null auto_increment,
-   message_id           int not null,
+   message_id           int not null unique,
    comment_id           int not null,
    reply_text           text not null,
    primary key (reply_id)
@@ -172,7 +172,8 @@ select
     b.user_name,
     b.message_time,
     b.praise_num,
-    c.comment_num
+    c.comment_num,
+    b.message_id
 from
 	(select a.article_id,
 		a.type_name,
@@ -180,7 +181,8 @@ from
 		a.article_text,
 		a.user_name,
 		a.message_time,
-		message_praise.praise_num
+		message_praise.praise_num,
+        a.message_id
 	from
 		(select 
 			article.article_id,
@@ -204,10 +206,59 @@ from
 left outer join
 	 (select
 	comment_the.article_id as article_id,
-	count(comment_the.comment_id) as comment_num
+	count(comment_the.article_id) as comment_num
 	from comment_the
 	group by comment_the.article_id) as c
 on c.article_id = b.article_id;
+
+/*==============================================================*/
+/* View: article_detail                                         */
+/*==============================================================*/
+create VIEW comment_detail
+	as
+select
+	b.comment_id,
+	b.message_id,
+	b.article_id,
+	b.comment_text,
+	b.user_name,
+	b.message_time,
+	b.praise_num,
+    c.reply_num
+from
+	(select 
+		a.comment_id,
+		a.message_id,
+		a.article_id,
+		a.comment_text,
+		a.user_name,
+		a.message_time,
+		message_praise.praise_num
+	from
+		(select
+			comment_the.comment_id,
+			comment_the.message_id,
+			comment_the.article_id,
+			comment_the.comment_text,
+			userinfo.user_name,
+			out_message.message_time
+		from
+			comment_the,
+			userinfo,
+			out_message
+		where
+			comment_the.message_id = out_message.message_id
+			and userinfo.user_id = out_message.user_id) as a
+	left outer join
+		message_praise
+	on message_praise.message_id = a.message_id) as b
+left outer join
+	(select
+		reply.comment_id as comment_id,
+        count(reply.comment_id) as reply_num
+	from reply
+    group by reply.comment_id) as c
+on c.comment_id = b.comment_id;
  
 alter table article add constraint FK_article_type foreign key (type_id)
       references article_type (type_id) on delete restrict on update restrict;
