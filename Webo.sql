@@ -41,16 +41,6 @@ create table article_type
 );
 
 /*==============================================================*/
-/* Table: at_the                                                */
-/*==============================================================*/
-create table at_the
-(
-   user_id              int not null,
-   message_id           int not null,
-   primary key (user_id, message_id)
-);
-
-/*==============================================================*/
 /* Table: comment_the                                           */
 /*==============================================================*/
 create table comment_the
@@ -267,12 +257,6 @@ alter table article add constraint FK_message_article foreign key (message_id)
       references out_message (message_id) on delete restrict on update restrict;
 
 alter table article add constraint FK_repeat foreign key (repeat_message_id)
-      references out_message (message_id) on delete restrict on update restrict;
-
-alter table at_the add constraint FK_at foreign key (user_id)
-      references userInfo (user_id) on delete restrict on update restrict;
-
-alter table at_the add constraint FK_at2 foreign key (message_id)
       references out_message (message_id) on delete restrict on update restrict;
 
 alter table comment_the add constraint FK_article_comment foreign key (article_id)

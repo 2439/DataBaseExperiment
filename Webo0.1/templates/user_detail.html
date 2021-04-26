@@ -18,14 +18,16 @@
         </ul>
     </div>
     <div>
-        <ul style="padding-left:20px; position:fixed; width:15%; height:100%">
-            <li><a href= "{{ url_for('user_detail',user_name=host,choose='detail') }}">个人信息</a></li>
-            <li><a href= "{{ url_for('user_detail',user_name=host,choose='focus') }}">关注好友</a></li>
-            <li><a href="{{ url_for('user_detail',user_name=host,choose='web') }}">微博</a> </li>
-            <li><a href="{{ url_for('user_detail',user_name=host,choose='praise') }}">点赞</a> </li>
-            <li><a href="{{ url_for('user_detail',user_name=host,choose='comment') }}">评论</a> </li>
-            <li><a href="{{ url_for('user_detail',user_name=host,choose='reply') }}">回复</a> </li>
-        </ul>
+        <div style="position:fixed; width:15%; height:100%;">
+            <ul>
+                <li><a href= "{{ url_for('user_detail',user_name=host,choose='detail') }}">个人信息</a></li>
+                <li><a href= "{{ url_for('user_detail',user_name=host,choose='focus') }}">关注好友</a></li>
+                <li><a href="{{ url_for('user_detail',user_name=host,choose='web') }}">微博</a> </li>
+                <li><a href="{{ url_for('user_detail',user_name=host,choose='praise') }}">点赞</a> </li>
+                <li><a href="{{ url_for('user_detail',user_name=host,choose='comment') }}">评论</a> </li>
+                <li><a href="{{ url_for('user_detail',user_name=host,choose='reply') }}">回复</a> </li>
+            </ul>
+        </div>
         <div>
             {% if choose == 'detail' %}
                 <div class="form-container" style="width:300px;margin:0 auto">
@@ -147,6 +149,45 @@
                     {% endif %}
                 </div>
             {% endif %}
+
+            {% for list in lists %}
+                <div style="border-bottom:1px solid #eee;overflow:hidden;padding:10px 0;">
+                    <div class="avatar-group" style="width:38px;height:100%;float:left;">
+                        <img src="{{ url_for('static',filename='images/user.jpg') }}" alt="" class="avatar"
+                        style="width:38px;height:38px;border-radius:50%;">
+                    </div>
+                    <div class="group" style="float:left;width:660px;margin-left:10px;" >
+                        <a href="{{ url_for('article_detail',article_id=list[0]) }}">
+                            <div>
+                                <p class="title" style="color:#259;font-weight:900;">{{ list[2] }}</p>
+                                <p class="content">{{ list[3] }}</p>
+                            </div>
+                        </a>
+                        <div class="info" style="text-align:right;">
+                            <span class="praise" style="margin-right:20px;color:grey">
+                                {% if praise[list[8]] == 1 %}
+                                    已赞（{% if list[6] %}{{ list[6] }}{% else %}0{% endif %}）
+                                {% else %}
+                                    <a href="{{ url_for('praise_index',message_id=list[8], choose=choose) }}">
+                                        点赞（{% if list[6] %}{{ list[6] }}{% else %}0{% endif %}）
+                                    </a>
+                                {% endif %}
+                            </span>
+                            <span class="comment" style="margin-right:20px;color:grey">
+                                <a href="{{ url_for('comment_action',article_id=list[0], choose=choose) }}">
+                                    评论（{% if list[7] %}{{ list[7] }}{% else %}0{% endif %}）
+                                </a>
+                            </span>
+                            <span class="author" style="margin-right:20px;color:grey">
+                                <a href="{{ url_for('user_detail',user_name=list[4],choose='detail') }}">
+                                    {{ list[4] }}
+                                </a>
+                            </span>
+                            <span class="time" style="color:grey">{{ list[5] }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

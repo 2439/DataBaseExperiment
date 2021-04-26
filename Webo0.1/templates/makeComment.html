@@ -14,6 +14,18 @@
         }
     );
 </script>
+    <div>
+        <ul class="nav nav-tabs" id="indexTab" aria-orientation="horizontal">
+            <li><a href= "{{ url_for('index',choose='all') }}">全部</a></li>
+            {% for type in types %}
+                <li><a href="{{ url_for('index',choose=type[0]) }}">{{ type[0] }}</a> </li>
+            {% endfor %}
+            <li><a href="{{ url_for('index',choose='focus') }}">关注</a> </li>
+            {% if user%}
+            <li><a href="{{ url_for('user_detail',user_name=user, choose='detail') }}">{{user}}，欢迎回来！</a></li>
+            {% endif %}
+        </ul>
+    </div>
 
 <ul style="list-style:none;padding-left:0;">
     <li style="border-bottom:1px solid #eee;overflow:hidden;padding:10px 0;">
@@ -30,18 +42,16 @@
             </a>
             <div class="info" style="text-align:right;">
                 <span class="praise" style="margin-right:20px;color:grey" id="praise_btn" >
-                    {% if praise[list[0]] == 1 %}
+                    {% if praise[list[8]] == 1 %}
                         已赞（{% if list[6] %}{{ list[6] }}{% else %} 0 {% endif %}）
                     {% else %}
-                        <a href="{{ url_for('praise_action',article_id=list[0], choose=choose) }}">
+                        <a href="{{ url_for('praise_comment',message_id=list[8], choose=choose, article_id=list[0]) }}">
                             点赞（{% if list[6] %}{{ list[6] }}{% else %} 0 {% endif %}）
                         </a>
                     {% endif %}
                 </span>
                 <span class="comment" style="margin-right:20px;color:grey">
-                    <a>
-                        评论（{% if list[7] %}{{ list[7] }}{% else %} 0 {% endif %}）
-                    </a>
+                    评论（{% if list[7] %}{{ list[7] }}{% else %} 0 {% endif %}）
                 </span>
                 <span class="author" style="margin-right:20px;color:grey">
                     <a href="{{ url_for('user_detail',user_name=list[4], choose='detail') }}">

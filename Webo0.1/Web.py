@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from flask import request, session
 import datetime
 import mysql.connector
@@ -33,7 +33,7 @@ def login():
         if pw:
             if password == pw:
                 session['user_name'] = username
-                return index('all')
+                return redirect(url_for('index', choose='all'))
             return render_template('login.html', text="密码错误")
         return render_template('login.html', text="用户名不存在")
 
@@ -88,11 +88,19 @@ def index(choose):
                                choose=choose
                                )
     if choose == 'focus':
-        lists = sql_article()
+        focus_id = sql_first_one("user_id", "userinfo", "user_name='" + session.get('user_name') + "'")
+        lists = sql_select("select article_detail.* "
+                           "from article_detail "
+                           "where article_detail.user_name in "
+                           "(select userinfo.user_name "
+                           "from userinfo, focus "
+                           "where focus_id=%s "
+                           "and userinfo.user_id=focus.focused_id) "
+                           % (focus_id,))
         return render_template('index.html',
                                user=session.get('user_name'),
                                types=sql_article_type(),
-                               lists=sql_article(),
+                               lists=lists,
                                praise=sql_praise_with_message_id(lists, 8),
                                choose=choose
                                )
@@ -103,7 +111,7 @@ def index(choose):
             return render_template('index.html',
                                    user=session.get('user_name'),
                                    types=sql_article_type(),
-                                   lists=sql_article(),
+                                   lists=lists,
                                    praise=sql_praise_with_message_id(lists, 8),
                                    choose=choose
                                    )
@@ -306,8 +314,38 @@ def user_detail(user_name, choose):
                                    focus_groups=focus_groups,
                                    focus_lists=focus_lists)
 
+    lists = []
+    if choose == 'web':
+        lists = sql_select("select * "
+                           "from article_detail "
+                           "where user_name='%s' "
+                           "order by message_time desc "
+                           % (user_name, ))
+    if choose == 'praise':
+        lists = sql_select("select * "
+                           "from article_detail "
+                           "where message_id in "
+                           "(select message_id "
+                           "from praise, userinfo "
+                           "where userinfo.user_name = '%s' "
+                           "and praise.user_id = userinfo.user_id ) "
+                           % (user_name, ))
+    if choose == 'comment':
+        lists = sql_select("select * "
+                           "from article_detail "
+                           "where article_id in "
+                           "(select comment_the.article_id "
+                           "from comment_the, out_message, userinfo "
+                           "where userinfo.user_name = '%s' "
+                           "and comment_the.message_id = out_message.message_id "
+                           "and out_message.user_id = userinfo.user_id) "
+                           % (user_name, ))
+    if choose == 'reply':
+        lists = sql_article()
     return render_template('user_detail.html',
                            user=session.get('user_name'),
+                           lists=lists,
+                           praise=sql_praise_with_message_id(lists, 8),
                            choose=choose,
                            types=sql_article_type(),
                            host=user_name)
@@ -341,6 +379,7 @@ def article_detail(article_id):
 
     return render_template('detail.html',
                            user=user,
+                           types=sql_article_type(),
                            list=list_a[0],
                            praise=sql_praise_with_message_id(list_a, 8),
                            praise_comment=sql_praise_with_message_id(comments, 1),
@@ -365,6 +404,14 @@ def praise_detail(message_id, article_id):
     return article_detail(article_id)
 
 
+# 评论页面内点赞
+@app.route('/praise_comment/<message_id>/<choose>/<article_id>', methods=['POST', 'GET'])
+@login_required
+def praise_comment(message_id, choose, article_id):
+    praise_action(message_id)
+    return comment_action(article_id, choose)
+
+
 # 点赞
 def praise_action(message_id):
     user_id = sql_first_one("user_id", "userinfo", "user_name='"+session.get('user_name')+"'")
@@ -384,6 +431,7 @@ def comment_action(article_id, choose):
                             "where article_id=" + article_id)
         return render_template('makeComment.html',
                                user=session.get('user_name'),
+                               types=sql_article_type(),
                                list=list_a[0],
                                praise=sql_praise_with_message_id(list_a, 8),
                                choose=choose,
@@ -401,7 +449,27 @@ def comment_action(article_id, choose):
                    "values(%s, %s, '%s') "
                    % (message_id, article_id, comment_text, ))
         if choose == "article_detail":
-            return article_detail(article_id)
+            user = session.get('user_name')
+            list_a = sql_select("select * "
+                                "from article_detail "
+                                "where article_id=" + article_id)
+            comments = sql_select("select * "
+                                  "from comment_detail "
+                                  "where article_id=" + article_id)
+            focused_id = sql_first_one("user_id",
+                                       "userinfo",
+                                       "user_name='" + list_a[0][4] + "'")
+            focus = sql_focus(focused_id)
+            focus_group_list = sql_group_list(user)
+            return render_template('detail.html',
+                                   user=user,
+                                   types=sql_article_type(),
+                                   list=list_a[0],
+                                   praise=sql_praise_with_message_id(list_a, 8),
+                                   praise_comment=sql_praise_with_message_id(comments, 1),
+                                   focus=focus,
+                                   focus_groups=focus_group_list,
+                                   comments=comments)
         else:
             return index(choose)
 
