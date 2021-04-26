@@ -6,19 +6,7 @@
 
 {% block main %}
     <div>
-        <ul class="nav nav-tabs" id="indexTab" aria-orientation="horizontal">
-            <li><a href= "{{ url_for('index',choose='all') }}">全部</a></li>
-            {% for type in types %}
-                <li><a href="{{ url_for('index',choose=type[0]) }}">{{ type[0] }}</a> </li>
-            {% endfor %}
-            <li><a href="{{ url_for('index',choose='focus') }}">关注</a> </li>
-            {% if user%}
-            <li><a href="{{ url_for('user_detail',user_name=user, choose='detail') }}">{{ user }}，欢迎回来！</a></li>
-            {% endif %}
-        </ul>
-    </div>
-    <div>
-        <div style="position:fixed; width:15%; height:100%;">
+        <div style="width:15%; height:100%;">
             <ul>
                 <li><a href= "{{ url_for('user_detail',user_name=host,choose='detail') }}">个人信息</a></li>
                 <li><a href= "{{ url_for('user_detail',user_name=host,choose='focus') }}">关注好友</a></li>
@@ -124,7 +112,7 @@
                                         {{ focus_group[2] }}
                                     </h4>
                                 </div>
-                                {% for focus_list in focus_lists[focus_group[2]] %}
+                                {% for focus_list in focus_lists[focus_group[0]] %}
                                     <div class="group" style="float:left;width:660px;margin-left:10px;" >
                                         <a href="{{ url_for('user_detail',user_name=focus_list[0],choose='detail') }}">
                                             {{ focus_list[0] }}

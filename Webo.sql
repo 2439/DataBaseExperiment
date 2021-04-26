@@ -249,6 +249,38 @@ left outer join
 	from reply
     group by reply.comment_id) as c
 on c.comment_id = b.comment_id;
+
+/*==============================================================*/
+/* View: reply_detail                                         */
+/*==============================================================*/
+create VIEW reply_detail
+	as
+select
+    a.reply_id,
+    a.message_id,
+    a.comment_id,
+    a.reply_text,
+    a.user_name,
+    a.message_time,
+    message_praise.praise_num
+from
+	(select
+		reply.reply_id,
+		reply.message_id,
+		reply.comment_id,
+		reply.reply_text,
+		userinfo.user_name,
+		out_message.message_time
+	from 
+		reply,
+		out_message,
+		userinfo
+	where
+		reply.message_id=out_message.message_id
+		and out_message.user_id=userinfo.user_id) as a
+left outer join
+	message_praise
+on message_praise.message_id = a.message_id;
  
 alter table article add constraint FK_article_type foreign key (type_id)
       references article_type (type_id) on delete restrict on update restrict;
