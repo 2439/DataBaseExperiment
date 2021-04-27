@@ -16,18 +16,9 @@ create table article
    article_id           int not null auto_increment,
    message_id           int not null unique,
    type_id              int not null,
-   repeat_message_id    int,
    article_title        char(50),
    article_text         text not null,
    primary key (article_id)
-);
-
-/*==============================================================*/
-/* Index: index_article                                         */
-/*==============================================================*/
-create index index_article on article
-(
-   article_title
 );
 
 /*==============================================================*/
@@ -121,6 +112,14 @@ create table userInfo
    user_state           bool not null,
    user_register        datetime not null,
    primary key (user_id)
+);
+
+/*==============================================================*/
+/* Index: index_user                                         */
+/*==============================================================*/
+create index index_user on userinfo
+(
+   user_name
 );
 
 /*==============================================================*/
@@ -286,9 +285,6 @@ alter table article add constraint FK_article_type foreign key (type_id)
       references article_type (type_id) on delete restrict on update restrict;
 
 alter table article add constraint FK_message_article foreign key (message_id)
-      references out_message (message_id) on delete restrict on update restrict;
-
-alter table article add constraint FK_repeat foreign key (repeat_message_id)
       references out_message (message_id) on delete restrict on update restrict;
 
 alter table comment_the add constraint FK_article_comment foreign key (article_id)
