@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bcd18672-0ed0-4dc5-a827-5c27c7773b7f" name="Default Changelist" comment="" />
+    <list default="true" id="bcd18672-0ed0-4dc5-a827-5c27c7773b7f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../180110711-郑漫莎-数据库实验三报告.docx" beforeDir="false" afterPath="$PROJECT_DIR$/../180110711-郑漫莎-数据库实验三报告.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Webo.cdb" beforeDir="false" afterPath="$PROJECT_DIR$/../Webo.cdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Webo.cdm" beforeDir="false" afterPath="$PROJECT_DIR$/../Webo.cdm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Webo.ldb" beforeDir="false" afterPath="$PROJECT_DIR$/../Webo.ldb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Webo.ldm" beforeDir="false" afterPath="$PROJECT_DIR$/../Webo.ldm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Webo.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../Webo.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Webo.pdm" beforeDir="false" afterPath="$PROJECT_DIR$/../Webo.pdm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,8 +45,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sql_work.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2811">
-              <caret line="179" lean-forward="true" selection-start-line="179" selection-end-line="179" />
+            <state relative-caret-position="94">
+              <caret line="36" column="32" selection-start-line="36" selection-start-column="32" selection-end-line="36" selection-end-column="32" />
               <folding>
                 <element signature="e#356#568#0" />
               </folding>
@@ -172,8 +181,8 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="953" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-7" />
     <option name="width" value="974" />
     <option name="height" value="1047" />
   </component>
@@ -343,15 +352,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="953" y="0" width="974" height="1047" extended-state="1" />
-    <editor active="true" />
+    <frame x="-7" y="0" width="974" height="1047" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49923897" visible="true" weight="0.22542734" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49923897" visible="true" weight="0.22542734" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" sideWeight="0.50076103" side_tool="true" weight="0.30235043" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3286334" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.24315444" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.24315444" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3991323" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -617,8 +625,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sql_work.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2811">
-          <caret line="179" lean-forward="true" selection-start-line="179" selection-end-line="179" />
+        <state relative-caret-position="94">
+          <caret line="36" column="32" selection-start-line="36" selection-start-column="32" selection-end-line="36" selection-end-column="32" />
           <folding>
             <element signature="e#356#568#0" />
           </folding>
