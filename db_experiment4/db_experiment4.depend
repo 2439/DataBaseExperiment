@@ -1,0 +1,27 @@
+# depslib dependency file v1.0
+1591860118 source:d:\zms\db_experiment4\extmem.c
+	<stdlib.h>
+	<stdio.h>
+	"extmem.h"
+
+1308709046 d:\zms\db_experiment4\extmem.h
+
+1619716661 source:d:\zms\db_experiment4\main.c
+	"main.h"
+
+1619716677 d:\zms\db_experiment4\main.h
+	<stdlib.h>
+	<stdio.h>
+	"extmem.h"
+	"linear_search.h"
+
+1619712612 d:\zms\db_experiment4\linearsearch.h
+
+1619716587 source:d:\zms\db_experiment4\linear_search.c
+	"linear_search.h"
+
+1619717310 d:\zms\db_experiment4\linear_search.h
+	<stdlib.h>
+	<stdio.h>
+	"extmem.h"
+
