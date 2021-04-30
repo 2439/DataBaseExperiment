@@ -1,6 +1,6 @@
 #include "linear_search.h"
 
-int linearSearch(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* write_blk)
+int linearSearch(Buffer* buf, unsigned int blk_start, unsigned int blk_end, unsigned int* write_blk)
 {
     int equal_num;
     unsigned int blk_num = blk_start;
@@ -20,6 +20,7 @@ int linearSearch(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int*
 
     // block for result
     re_blk = getNewBlockInBuffer(buf);
+    memset(re_blk, 0, buf->blkSize*sizeof(unsigned char));
     if(!re_blk)
         return -1;
 
@@ -54,7 +55,7 @@ int linearSearch(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int*
     return 0;
 }
 
-int findInBlk(int equal_num, unsigned int blk_num, Buffer* buf, unsigned char* re_blk, int* blk_count, int* write_blk, int* count_num)
+int findInBlk(int equal_num, unsigned int blk_num, Buffer* buf, unsigned char* re_blk, int* blk_count, unsigned int* write_blk, int* count_num)
 {
     unsigned char* blk;
     int X, Y;
@@ -71,8 +72,7 @@ int findInBlk(int equal_num, unsigned int blk_num, Buffer* buf, unsigned char* r
     // (X,Y)
     for(int i = 0; i < 7; i++)
     {
-        X = getFour(blk+i*8);
-        Y = getFour(blk+i*8+4);
+        getXY(&X, &Y, blk, i);
 
         // equal
         if(X == equal_num)
@@ -84,6 +84,10 @@ int findInBlk(int equal_num, unsigned int blk_num, Buffer* buf, unsigned char* r
             if(re_blk_count >= 7)
             {
                 printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ%d\n",*write_blk);
+                if(writeAddr(*write_blk+1, re_blk) == -1)
+                {
+                    return -1;
+                }
                 if(writeBlockToDisk(re_blk, *write_blk, buf) != 0)
                 {
                     perror("Writing Block Failed!\n");
@@ -91,15 +95,12 @@ int findInBlk(int equal_num, unsigned int blk_num, Buffer* buf, unsigned char* r
                 }
                 *write_blk = *write_blk+1;
                 re_blk = getNewBlockInBuffer(buf);
+                memset(re_blk, 0, buf->blkSize*sizeof(unsigned char));
                 re_blk_count = 0;
             }
 
             // write
-            if(writeFour(X, re_blk+re_blk_count*8) == -1)
-            {
-                return -1;
-            }
-            if(writeFour(Y, re_blk+re_blk_count*8+4) == -1)
+            if(writeXY(X, Y, re_blk, re_blk_count) == -1)
             {
                 return -1;
             }
@@ -109,7 +110,7 @@ int findInBlk(int equal_num, unsigned int blk_num, Buffer* buf, unsigned char* r
     *blk_count = re_blk_count;
 
     // addr
-    addr = getFour(blk+7*8);
+    getAddr(&addr, blk);
 
     freeBlockInBuffer(blk, buf);
     return addr;

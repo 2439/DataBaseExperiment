@@ -4,8 +4,8 @@ int main(int argc, char **argv)
 {
     Buffer buf; /* A buffer */
     Table R, S;
-    int linearSearchWriteBlk = LINEARSEARCHWRITEBLK;
-    int TPMMSWriteBlk = TPMMSWRITEBLK;
+    unsigned int linearSearchWriteBlk = LINEARSEARCHWRITEBLK;
+    unsigned int TPMMSWriteBlk = TPMMSWRITEBLK;
     int choose = 0;
     int re = 0;
 
@@ -28,7 +28,12 @@ int main(int argc, char **argv)
                 printf("there is something error in linearSearch\n");
             break;
         case 2:
-            printf("两阶段多路归并排序算法\n");
+            re = TPMMS(&buf, R.blk_start, R.blk_end, &TPMMSWriteBlk);
+            if(re == -1)
+                printf("There is something error in TPMMS\n");
+            re = TPMMS(&buf, S.blk_start, S.blk_end, &TPMMSWriteBlk);
+            if(re == -1)
+                printf("There is something error in TPMMS\n");
             break;
         case 3:
             printf("基于索引的关系选择算法\n");

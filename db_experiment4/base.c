@@ -33,6 +33,17 @@ int getNumber()
     return re;
 }
 
+void getXY(int* X, int* Y, unsigned char* blk, int i)
+{
+    *X = getFour(blk+i*8);
+    *Y = getFour(blk+i*8+4);
+}
+
+void getAddr(int* addr, unsigned char* blk)
+{
+    *addr = getFour(blk+7*8);
+}
+
 int getFour(unsigned char* blk_begin)
 {
     char str[5];
@@ -41,6 +52,24 @@ int getFour(unsigned char* blk_begin)
         str[k] = *(blk_begin + k);
     }
     return atoi(str);
+}
+
+int writeXY(int X, int Y, unsigned char* blk, int i)
+{
+    if(writeFour(X, blk+i*8) == -1)
+    {
+        return -1;
+    }
+    if(writeFour(Y, blk+i*8+4) == -1)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+int writeAddr(int addr, unsigned char* blk)
+{
+    return writeFour(addr, blk+7*8);
 }
 
 int writeFour(int num, unsigned char* blk_begin)
@@ -70,4 +99,14 @@ void writeOne(int num, unsigned char* blk_begin, int* location)
     if(num != 0)
         *location = *location + 1;
     return;
+}
+
+void freeAllBlockInBuffer(Buffer* buf)
+{
+    memset(buf->data, 0, buf->bufSize*sizeof(unsigned char*));
+    for(int i=0; i<buf->numAllBlk; i++)
+    {
+        freeBlockInBuffer(buf->data+i*65+1, buf);
+    }
+    return 0;
 }

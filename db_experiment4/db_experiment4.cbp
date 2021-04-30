@@ -31,6 +31,20 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="TPMMS.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="TPMMS.h">
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="base.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="base.h">
+			<Option target="Debug" />
+		</Unit>
 		<Unit filename="extmem.c">
 			<Option compilerVar="CC" />
 		</Unit>
