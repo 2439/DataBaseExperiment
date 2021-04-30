@@ -4,24 +4,26 @@ int main(int argc, char **argv)
 {
     Buffer buf; /* A buffer */
     Table R, S;
+    int linearSearchWriteBlk = LINEARSEARCHWRITEBLK;
+    int TPMMSWriteBlk = TPMMSWRITEBLK;
     int choose = 0;
     int re = 0;
 
     initTableRS(&R, &S);
-    /* Initialize the buffer */
-    if (!initBuffer(520, 64, &buf))
-    {
-        perror("Buffer Initialization Failed!\n");
-        return -1;
-    }
 
     choose = menuList();    // print list and choose algorithm
     while(choose != 0)
     {
+        /* Initialize the buffer */
+        if (!initBuffer(520, 64, &buf))
+        {
+            perror("Buffer Initialization Failed!\n");
+            return -1;
+        }
         switch(choose)
         {
         case 1:
-            re = linearSearch(&buf, R.blk_start, R.blk_end);
+            re = linearSearch(&buf, S.blk_start, S.blk_end, &linearSearchWriteBlk);
             if(re == -1)
                 printf("there is something error in linearSearch\n");
             break;
@@ -60,13 +62,6 @@ int main(int argc, char **argv)
     return 0;
 }
 
-/** \brief 初始化R和S表的开始和结束数据块
- *
- * \param R：R表
- * \param S：S表
- *
- */
-
 void initTableRS(Table* R, Table* S)
 {
     R->blk_start = 1;
@@ -75,16 +70,12 @@ void initTableRS(Table* R, Table* S)
     S->blk_end = 48;
 }
 
-/** \brief 打印菜单并选择算法
- *
- * \return 选择1-7，退出0，其余重新输入
- *
- */
-
 int menuList()
 {
     char ch;
+    char re;
     int input;
+    int count = 0;
     printf("1.基于线性搜索的关系选择算法\n");
     printf("2.两阶段多路归并排序算法\n");
     printf("3.基于索引的关系选择算法\n");
@@ -95,13 +86,28 @@ int menuList()
     printf("请输入算法选择：");
 
     ch = (char)getchar();
-    fflush(stdin);
-    while(ch > '7' || ch < '0')
+    while(ch != '\n')
     {
-        printf("input error, please input again\n");
+        if(ch > '7' || ch < '0')
+        {
+            printf("input error, please input again\n");
+            fflush(stdin);
+            ch = (char)getchar();
+            count = 0;
+            continue;
+        }
+        if(count != 0)
+        {
+            printf("input too long, please input again\n");
+            fflush(stdin);
+            ch = (char)getchar();
+            count = 0;
+            continue;
+        }
+        count++;
+        re = ch;
         ch = (char)getchar();
-        fflush(stdin);
     }
-    sscanf(&ch, "%d", &input);
+    sscanf(&re, "%d", &input);
     return input;
 }

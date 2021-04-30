@@ -25,3 +25,33 @@
 	<stdio.h>
 	"extmem.h"
 
+1619761454 source:d:\zms\databaseexperiment\db_experiment4\extmem.c
+	<stdlib.h>
+	<stdio.h>
+	"extmem.h"
+
+1619761454 d:\zms\databaseexperiment\db_experiment4\extmem.h
+
+1619769635 source:d:\zms\databaseexperiment\db_experiment4\linear_search.c
+	"linear_search.h"
+
+1619769669 d:\zms\databaseexperiment\db_experiment4\linear_search.h
+	<stdlib.h>
+	<stdio.h>
+	"extmem.h"
+	"base.h"
+
+1619769356 source:d:\zms\databaseexperiment\db_experiment4\main.c
+	"main.h"
+
+1619763392 d:\zms\databaseexperiment\db_experiment4\main.h
+	<stdlib.h>
+	<stdio.h>
+	"extmem.h"
+	"linear_search.h"
+
+1619769728 d:\zms\databaseexperiment\db_experiment4\base.h
+	<stdio.h>
+	<stdlib.h>
+	"extmem.h"
+
