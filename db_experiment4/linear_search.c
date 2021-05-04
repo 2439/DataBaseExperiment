@@ -79,32 +79,7 @@ int findInBlk(int equal_num, unsigned int blk_num, Buffer* buf, unsigned char* r
         {
             printf("(X=%d, Y=%d)\n", X, Y);
             *count_num = *count_num + 1;
-
-            // re_blk is full, write to disk and update re_blk
-            if(re_blk_count >= 7)
-            {
-                printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ%d\n",*write_blk);
-                if(writeAddr(*write_blk+1, re_blk) == -1)
-                {
-                    return -1;
-                }
-                if(writeBlockToDisk(re_blk, *write_blk, buf) != 0)
-                {
-                    perror("Writing Block Failed!\n");
-                    return -1;
-                }
-                *write_blk = *write_blk+1;
-                re_blk = getNewBlockInBuffer(buf);
-                memset(re_blk, 0, buf->blkSize*sizeof(unsigned char));
-                re_blk_count = 0;
-            }
-
-            // write
-            if(writeXY(X, Y, re_blk, re_blk_count) == -1)
-            {
-                return -1;
-            }
-            re_blk_count++;
+            writeToBlk(buf, X, Y, re_blk, &re_blk_count, write_blk);
         }
     }
     *blk_count = re_blk_count;

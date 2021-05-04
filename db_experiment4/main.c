@@ -9,17 +9,18 @@ int main(int argc, char **argv)
     int choose = 0;
     int re = 0;
 
+    /* Initialize the buffer */
+    if (!initBuffer(520, 64, &buf))
+    {
+        perror("Buffer Initialization Failed!\n");
+        return -1;
+    }
+    
     initTableRS(&R, &S);
 
     choose = menuList();    // print list and choose algorithm
     while(choose != 0)
     {
-        /* Initialize the buffer */
-        if (!initBuffer(520, 64, &buf))
-        {
-            perror("Buffer Initialization Failed!\n");
-            return -1;
-        }
         switch(choose)
         {
         case 1:
@@ -29,6 +30,8 @@ int main(int argc, char **argv)
             break;
         case 2:
             re = TPMMS(&buf, R.blk_start, R.blk_end, &TPMMSWriteBlk);
+            buf.numIO = 0;
+            freeAllBlockInBuffer(&buf);
             if(re == -1)
                 printf("There is something error in TPMMS\n");
             re = TPMMS(&buf, S.blk_start, S.blk_end, &TPMMSWriteBlk);
@@ -60,10 +63,11 @@ int main(int argc, char **argv)
             break;
         else
         {
+            buf.numIO = 0;
+            freeAllBlockInBuffer(&buf);
             choose = menuList();
         }
     }
-
     return 0;
 }
 

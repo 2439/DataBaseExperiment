@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "extmem.h"
 
 /** \brief 获得0-9999的数字
@@ -68,16 +69,6 @@ int writeAddr(int addr, unsigned char* blk);
  */
 int writeFour(int num, unsigned char* blk_begin);
 
-/** \brief 将num写入blk_begin+location的位置，如果num不为0，则location++
- *
- * \param num：写入的一位数字
- * \param blk_begin：开始写入的blk_begin位置
- * \param location：num对应偏移量
- * \return 无
- *
- */
-void writeOne(int num, unsigned char* blk_begin, int* location);
-
 /** \brief buf清零并释放所有缓存区域
  *
  * \param buf：缓存指针
@@ -85,4 +76,64 @@ void writeOne(int num, unsigned char* blk_begin, int* location);
  *
  */
 void freeAllBlockInBuffer(Buffer* buf);
+
+/** \brief 将缓存区buf中的数据看作数组，获得第i个数的位置
+ *
+ * \param buf：缓存区
+ * \param i：需要获得的数据位置
+ * \return 返回buf内第i个元祖的位置
+ *
+ */
+unsigned char* getXILocationFromBuf(Buffer* buf, int i);
+
+/** \brief 缓存区buf的第blk_count块（0-7）是否可用
+ *
+ * \param buf：缓存区
+ * \param i：判断的块
+ * \return 0为不在用，1为在用
+ *
+ */
+int ifUsingBlk(Buffer* buf, int blk_count);
+
+/** \brief 缓存区buf的第blk_count块（0-7）的起始位置
+ *
+ * \param buf：缓存区
+ * \param i：判断的块
+ * \return 数据块的起始位置
+ *
+ */
+unsigned char* getBlkFromBuf(Buffer* buf, int blk_count);
+
+/** \brief 交换buf中第i和第j个元祖的数据
+ *
+ * \param buf：缓存区
+ * \param i：第i个元祖
+ * \param j：第j个元祖
+ * \return 无
+ *
+ */
+void swapIJInBuf(Buffer* buf, int i, int j);
+
+/** \brief 将缓存区buf对应块blk中写入下一块地址，然后写入磁盘write_blk
+ *
+ * \param buf：缓存区
+ * \param blk：写入块
+ * \param write_blk：写入磁盘
+ * \return 正确返回0，错误返回-1
+ *
+ */
+int writeAddrBlockToDisk(Buffer* buf, unsigned char* blk, int* write_blk);
+
+/** \brief 将X，Y写入blk，如果blk_count>=7即blk已满，则存入磁盘write_blk，获取新的blk
+ *
+ * \param buf：缓存区
+ * \param blk：写入块
+ * \param X：写入数据
+ * \param Y：写入数据
+ * \param blk_count：写入快blk已有的元组数
+ * \param write_blk：写入磁盘的位置，如果写入，自动加一
+ * \return
+ *
+ */
+void writeToBlk(Buffer* buf, int X, int Y, unsigned char* blk, int* blk_count, unsigned int* write_blk);
 #endif // BASE_H_INCLUDED

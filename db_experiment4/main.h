@@ -5,9 +5,10 @@
 #include <stdio.h>
 #include "extmem.h"
 #include "linear_search.h"
+#include "TPMMS.h"
 
 #define LINEARSEARCHWRITEBLK 101
-#define TPMMSWRITEBLK 301
+#define TPMMSWRITEBLK 201
 
 typedef struct table
 {
