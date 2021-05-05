@@ -6,9 +6,14 @@
 #include "extmem.h"
 #include "linear_search.h"
 #include "TPMMS.h"
+#include "index_search.h"
+#include "join_with_sort.h"
 
 #define LINEARSEARCHWRITEBLK 101
 #define TPMMSWRITEBLK 201
+#define INDEXBLK 301
+#define INDEXSEARCHBLK 351 
+#define JOINBLK 401
 
 typedef struct table
 {

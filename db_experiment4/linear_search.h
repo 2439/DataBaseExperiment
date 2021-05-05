@@ -26,6 +26,7 @@ int linearSearch(Buffer* buf, unsigned int blk_start, unsigned int blk_end, unsi
  * \param   re_blk:结果块指针
  * \param   re_blk_count:结果块已存数目
  * \param   write_blk:写入的磁盘地址
+ * \param   count_num：已找到元组统计
  * \return 下一块地址，错误返回-1
  *
  */

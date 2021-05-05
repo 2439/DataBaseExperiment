@@ -39,14 +39,12 @@ int linearSearch(Buffer* buf, unsigned int blk_start, unsigned int blk_end, unsi
         return -1;
     }
 
-    // write final result
-    printf("注：结果写入磁盘%d\n",*write_blk);
-    if(writeBlockToDisk(re_blk, *write_blk, buf) != 0)
+    // write finial result
+    if(writeAddrBlockToDisk(buf, re_blk, write_blk) == -1)
     {
         perror("Writing Block Failed!\n");
         return -1;
     }
-    *write_blk = *write_blk+1;
 
     // IOcount
     printf("满足选择条件的元组一共%d个\n", count);

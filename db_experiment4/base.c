@@ -168,6 +168,7 @@ int writeAddrBlockToDisk(Buffer* buf, unsigned char* blk, int* write_blk)
     {
         return -1;
     }
+
     if(writeBlockToDisk(blk, *write_blk, buf) != 0)
     {
         perror("Writing Block Failed!\n");
@@ -180,6 +181,10 @@ int writeAddrBlockToDisk(Buffer* buf, unsigned char* blk, int* write_blk)
 
 void writeToBlk(Buffer* buf, int X, int Y, unsigned char* blk, int* blk_count, unsigned int* write_blk)
 {
+    // write
+    writeXY(X, Y, blk, *blk_count);
+    *blk_count = *blk_count + 1;
+
     // blk is full, write to disk and update blk
     if(*blk_count == 7)
     {
@@ -188,8 +193,4 @@ void writeToBlk(Buffer* buf, int X, int Y, unsigned char* blk, int* blk_count, u
         memset(blk, 0, buf->blkSize*sizeof(unsigned char));
         *blk_count = 0;
     }
-
-    // write
-    writeXY(X, Y, blk, *blk_count);
-    *blk_count = *blk_count + 1;
 }
