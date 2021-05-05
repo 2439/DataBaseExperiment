@@ -34,18 +34,12 @@
 		</Compiler>
 		<Unit filename="TPMMS.c">
 			<Option compilerVar="CC" />
-			<Option target="Debug" />
 		</Unit>
-		<Unit filename="TPMMS.h">
-			<Option target="Debug" />
-		</Unit>
+		<Unit filename="TPMMS.h" />
 		<Unit filename="base.c">
 			<Option compilerVar="CC" />
-			<Option target="Debug" />
 		</Unit>
-		<Unit filename="base.h">
-			<Option target="Debug" />
-		</Unit>
+		<Unit filename="base.h" />
 		<Unit filename="extmem.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -65,9 +59,7 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="main.h">
-			<Option target="Debug" />
-		</Unit>
+		<Unit filename="main.h" />
 		<Unit filename="set_operation.c">
 			<Option compilerVar="CC" />
 		</Unit>
