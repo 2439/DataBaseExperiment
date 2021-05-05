@@ -1,6 +1,6 @@
 #include "index_search.h"
 
-void makeIndex(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* write_blk)
+void makeIndex(Buffer* buf, unsigned int blk_start, unsigned int blk_end, unsigned int* write_blk)
 {
     printf("创建索引文件\n");
     unsigned char* re_blk;
@@ -25,10 +25,11 @@ void makeIndex(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* w
     {
         writeAddrBlockToDisk(buf, re_blk, write_blk);  // write index in buffer to disk
     }
+    printf("\n");
     return;
 }
 
-int indexSearch(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* write_blk)
+int indexSearch(Buffer* buf, unsigned int blk_start, unsigned int blk_end, unsigned int* write_blk)
 {
     int equal_num;
     unsigned char* re_blk;
@@ -49,7 +50,7 @@ int indexSearch(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* 
     if(!re_blk)
         return -1;
     memset(re_blk, 0, buf->bufSize*sizeof(unsigned char));
-    
+
     // index search
     // index find
     while(blk_num < blk_end)
@@ -89,16 +90,15 @@ int findIndexInBlk(int equal_num, unsigned int* blk_num, Buffer* buf)
 {
     unsigned char* blk;
     int X, Y;
-    int flag = 0;
 
     // read
     printf("读入索引块%d\n", *blk_num);
-    if((blk = readBlockFromDisk(*blk_num, buf)) == NULL)
+    blk = readBlockFromDisk(*blk_num, buf);
+    if(blk == NULL)
     {
         perror("Reading Block Failed!\n");
         return -1;
-    }    
-    
+    }
     // (X,Y)
     for(int i = 0; i < 7; i++)
     {
@@ -120,9 +120,9 @@ int findInBlkWithSort(int equal_num, unsigned int blk_num, Buffer* buf, unsigned
 {
     unsigned char* blk;
     int X, Y;
-    int addr;
+    unsigned int addr;
     int flag = 0;
-    
+
     // read
     printf("读入数据块%d\n", blk_num);
     if((blk = readBlockFromDisk(blk_num, buf)) == NULL)

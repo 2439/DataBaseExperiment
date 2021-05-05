@@ -1,7 +1,7 @@
 cc = gcc
 prom = db
-deps = extmem.h base.h linear_search.h main.h TPMMS.h index_search.h join_with_sort.h
-obj = extmem.o base.o linear_search.o main.o TPMMS.o index_search.o join_with_sort.o
+deps = extmem.h base.h linear_search.h main.h TPMMS.h index_search.h join_with_sort.h set_operation.h
+obj = extmem.o base.o linear_search.o main.o TPMMS.o index_search.o join_with_sort.o set_operation.o
 
 $(prom): $(obj)
 	$(cc) -o $(prom) $(obj)

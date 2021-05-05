@@ -9,6 +9,9 @@ int main(int argc, char **argv)
     unsigned int indexBlk = INDEXBLK;
     unsigned int indexSearchBlk = INDEXSEARCHBLK;
     unsigned int joinBlk = JOINBLK;
+    unsigned int intersectionBlk = INTERSECTIONBLK;
+    unsigned int unionBlk = UNIONBLK;
+    unsigned int minusBlk = MINUSBLK;
     int choose = 0;
     int re = 0;
     int flag = 0;
@@ -19,7 +22,7 @@ int main(int argc, char **argv)
         perror("Buffer Initialization Failed!\n");
         return -1;
     }
-    
+
     initTableRS(&R, &S);
 
     choose = menuList();    // print list and choose algorithm
@@ -58,6 +61,7 @@ int main(int argc, char **argv)
 
             if(re == -1)
                 printf("There is something error in TPMMS\n");
+            buf.numIO = 0;
             freeAllBlockInBuffer(&buf);
 
             // make index S
@@ -80,14 +84,22 @@ int main(int argc, char **argv)
                 printf("There is something error in joinWithSort\n");
             break;
         case 5:
-            // 
-            printf("集合并算法\n");
+            // set union
+            re = unionWithSort(&buf, inline_R.blk_start, inline_R.blk_end, inline_S.blk_start, inline_S.blk_end, &unionBlk);
+            if(re == -1)
+                printf("There is something error in union\n");
             break;
         case 6:
-            printf("集合交算法\n");
+            // set operation
+            re = intersection(&buf, inline_R.blk_start, inline_R.blk_end, inline_S.blk_start, inline_S.blk_end, &intersectionBlk);
+            if(re == -1)
+                printf("There is something error in intersection\n");
             break;
         case 7:
-            printf("集合差算法\n");
+            // set minus
+            re = minusWithSort(&buf, inline_R.blk_start, inline_R.blk_end, inline_S.blk_start, inline_S.blk_end, &minusBlk);
+            if(re == -1)
+                printf("There is something error in minus\n");
             break;
         case 0:
             break;

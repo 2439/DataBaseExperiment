@@ -8,8 +8,8 @@
 
 #define TPMMSWRITETEMP 1001
 
-// å­é›†ï¼Œä»blk_startå¼€å§‹åˆ°blk_endçš„å—ä¸ºä¸€ä¸ªå­é›†
-// blkä¸ºå½“å‰è¿›è¡Œæ¯”è¾ƒçš„å—ï¼Œcountä¸ºæ¯”è¾ƒçš„å…ƒç¥–(0-6)
+// ×Ó¼¯£¬´Óblk_start¿ªÊ¼µ½blk_endµÄ¿éÎªÒ»¸ö×Ó¼¯
+// blkÎªµ±Ç°½øĞĞ±È½ÏµÄ¿é£¬countÎª±È½ÏµÄÔª×æ(0-6)
 typedef struct group_list
 {
     unsigned int blk_start;
@@ -19,86 +19,86 @@ typedef struct group_list
     struct group_list* next;
 } GroupList;
 
-/** \brief ä¸¤é˜¶æ®µå¤šè·¯å½’å¹¶æ’åºç®—æ³•
+/** \brief Á½½×¶Î¶àÂ·¹é²¢ÅÅĞòËã·¨
  *
- * \param Buffer* bufï¼šç¼“å­˜åŒºæŒ‡é’ˆ
- * \param blk_start: å—å¼€å§‹åœ°å€
- * \param blk_end: å—ç»“æŸåœ°å€
- * \param write_blk: ç»“æœå†™å…¥å¼€å§‹åœ°å€
- * \return ä¿å­˜æˆåŠŸè¿”å›0ï¼Œå¤±è´¥è¿”å›-1
+ * \param Buffer* buf£º»º´æÇøÖ¸Õë
+ * \param blk_start: ¿é¿ªÊ¼µØÖ·
+ * \param blk_end: ¿é½áÊøµØÖ·
+ * \param write_blk: ½á¹ûĞ´Èë¿ªÊ¼µØÖ·
+ * \return ±£´æ³É¹¦·µ»Ø0£¬Ê§°Ü·µ»Ø-1
  *
  */
-int TPMMS(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* write_blk);
+int TPMMS(Buffer* buf, unsigned int blk_start, unsigned int blk_end, unsigned int* write_blk);
 
-/** \brief ç¼“å­˜åŒºbufå†…æ’ï¼Œä»blk_numåˆ°blk_endçš„å—ï¼Œåˆ†å­é›†å¹¶å†…æ’ï¼Œå°†å­é›†ç»“æœå†™å…¥headä¸­
+/** \brief »º´æÇøbufÄÚÅÅ£¬´Óblk_numµ½blk_endµÄ¿é£¬·Ö×Ó¼¯²¢ÄÚÅÅ£¬½«×Ó¼¯½á¹ûĞ´ÈëheadÖĞ
  *
- * \param Buffer* bufï¼šç¼“å­˜åŒºæŒ‡é’ˆ
- * \param blk_numï¼šå½“å‰å—
- * \param blk_endï¼šæœ€åä¸€å—
- * \param headï¼šå­é›†åˆ—è¡¨çš„æŒ‡é’ˆ
+ * \param Buffer* buf£º»º´æÇøÖ¸Õë
+ * \param blk_num£ºµ±Ç°¿é
+ * \param blk_end£º×îºóÒ»¿é
+ * \param head£º×Ó¼¯ÁĞ±íµÄÖ¸Õë
  * \return
  *
  */
 void inlineSort(Buffer* buf, unsigned int blk_num, unsigned int blk_end, GroupList* head);
 
-/** \brief ç¼“å­˜åŒºbufå†…æ’ï¼Œå¹¶å†™å…¥write_blkä¸ºèµ·å§‹çš„å—å†…
+/** \brief »º´æÇøbufÄÚÅÅ£¬²¢Ğ´Èëwrite_blkÎªÆğÊ¼µÄ¿éÄÚ
  *
- * \param bufï¼šç¼“å­˜åŒºæŒ‡é’ˆ
- * \param write_blk: ç»“æœå†™å…¥å¼€å§‹åœ°å€
- * \return ä¿å­˜æˆåŠŸè¿”å›0ï¼Œå¤±è´¥è¿”å›-1
+ * \param buf£º»º´æÇøÖ¸Õë
+ * \param write_blk: ½á¹ûĞ´Èë¿ªÊ¼µØÖ·
+ * \return ±£´æ³É¹¦·µ»Ø0£¬Ê§°Ü·µ»Ø-1
  *
  */
 int inSort(Buffer* buf, unsigned int* write_blk);
 
-/** \brief åˆå§‹åŒ–èŠ‚ç‚¹æ•°æ®
+/** \brief ³õÊ¼»¯½ÚµãÊı¾İ
  *
- * \param nodeï¼šè¢«åˆå§‹åŒ–çš„èŠ‚ç‚¹
- * \param blk_numï¼šåˆå§‹åŒ–çš„å¼€å§‹å’Œç»“æŸå—æ•°æ®
- * \param headï¼šèŠ‚ç‚¹çš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
- * \return 
+ * \param node£º±»³õÊ¼»¯µÄ½Úµã
+ * \param blk_num£º³õÊ¼»¯µÄ¿ªÊ¼ºÍ½áÊø¿éÊı¾İ
+ * \param head£º½ÚµãµÄÏÂÒ»¸ö½Úµã
+ * \return
  *
  */
 void groupNodeInit(GroupList* node, unsigned int blk_num, GroupList* head);
 
-/** \brief å½’å¹¶åˆå§‹åŒ–
+/** \brief ¹é²¢³õÊ¼»¯
  *
- * \param bufï¼šç¼“å­˜åŒº
- * \param headï¼šå­é›†ä¿¡æ¯
- * \return 
+ * \param buf£º»º´æÇø
+ * \param head£º×Ó¼¯ĞÅÏ¢
+ * \return
  *
  */
 void mergeInit(Buffer* buf, GroupList* head);
 
-/** \brief æŸ¥æ‰¾ç¼“å­˜åŒºbufå†…headå¯¹åº”å­é›†çš„æœ€å°å€¼ï¼Œè¿”å›å¯¹åº”å…ƒç¥–(X,Y)ï¼Œæ›´æ–°å¯¹åº”headçš„ä¿¡æ¯
+/** \brief ²éÕÒ»º´æÇøbufÄÚhead¶ÔÓ¦×Ó¼¯µÄ×îĞ¡Öµ£¬·µ»Ø¶ÔÓ¦Ôª×æ(X,Y)£¬¸üĞÂ¶ÔÓ¦headµÄĞÅÏ¢
  *
- * \param bufï¼šç¼“å­˜åŒº
- * \param headï¼šå­é›†ä¿¡æ¯
- * \param Xï¼šå…ƒç¥–ç¬¬ä¸€ä¸ªä¿¡æ¯
- * \param Yï¼šå…ƒç»„ç¬¬äºŒä¸ªä¿¡æ¯
- * \return æœ€å°å€¼æ‰€åœ¨å­é›†
+ * \param buf£º»º´æÇø
+ * \param head£º×Ó¼¯ĞÅÏ¢
+ * \param X£ºÔª×æµÚÒ»¸öĞÅÏ¢
+ * \param Y£ºÔª×éµÚ¶ş¸öĞÅÏ¢
+ * \return ×îĞ¡ÖµËùÔÚ×Ó¼¯
  *
  */
 GroupList* findSmall(Buffer* buf, GroupList* head, int* X, int* Y);
 
-/** \brief æ›´æ–°smallåˆ°ä¸‹ä¸€ä¸ªéœ€æ¯”è¾ƒçš„å…ƒç»„ï¼Œå¦‚æœæ²¡æœ‰åˆ™è¿”å›-1
+/** \brief ¸üĞÂsmallµ½ÏÂÒ»¸öĞè±È½ÏµÄÔª×é£¬Èç¹ûÃ»ÓĞÔò·µ»Ø-1
  *
- * \param smallï¼šæœ€å°å€¼å¯¹åº”å­é›†ä¿¡æ¯
- * \param bufï¼šç¼“å­˜åŒº
+ * \param small£º×îĞ¡Öµ¶ÔÓ¦×Ó¼¯ĞÅÏ¢
+ * \param buf£º»º´æÇø
  * \return
  *
  */
 void getNext(GroupList* small, Buffer* buf);
 
-/** \brief å°†srcå—å†…å‰©ä½™å…ƒç»„å†™å…¥ç¼“å­˜åŒºçš„dstå†…ï¼Œå¦‚æœdstä¸è¶³ï¼Œåˆ™å†™å…¥write_blkå†…ï¼Œ
- * \param bufï¼šç¼“å­˜åŒº
- * \param src_blkï¼šå†™å…¥çš„å—
- * \param src_blk_countï¼šå†™å…¥çš„å—çš„èµ·å§‹å†™å…¥å…ƒç»„åœ°å€
- * \param dst_blkï¼šè¢«å†™å…¥çš„å—
- * \param dst_blk_countï¼šè¢«å†™å…¥çš„å—çš„èµ·å§‹å†™å…¥å…ƒç»„åœ°å€
- * \param write_blkï¼šå†™å…¥ç£ç›˜ä½ç½®
- * \return 
+/** \brief ½«src¿éÄÚÊ£ÓàÔª×éĞ´Èë»º´æÇøµÄdstÄÚ£¬Èç¹ûdst²»×ã£¬ÔòĞ´Èëwrite_blkÄÚ£¬
+ * \param buf£º»º´æÇø
+ * \param src_blk£ºĞ´ÈëµÄ¿é
+ * \param src_blk_count£ºĞ´ÈëµÄ¿éµÄÆğÊ¼Ğ´ÈëÔª×éµØÖ·
+ * \param dst_blk£º±»Ğ´ÈëµÄ¿é
+ * \param dst_blk_count£º±»Ğ´ÈëµÄ¿éµÄÆğÊ¼Ğ´ÈëÔª×éµØÖ·
+ * \param write_blk£ºĞ´Èë´ÅÅÌÎ»ÖÃ
+ * \return
  *
  */
-void writeBlkLastToBlkBuf(Buffer* buf, unsigned char* src_blk, int src_blk_count, unsigned char* dst_blk, int* dst_blk_count, int* write_blk);
+void writeBlkLastToBlkBuf(Buffer* buf, unsigned char* src_blk, int src_blk_count, unsigned char* dst_blk, int* dst_blk_count, unsigned int* write_blk);
 
 #endif // TPMMS_H_INCLUDED

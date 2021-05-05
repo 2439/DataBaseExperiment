@@ -39,7 +39,7 @@ void getXY(int* X, int* Y, unsigned char* blk, int i)
     *Y = getFour(blk+i*8+4);
 }
 
-void getAddr(int* addr, unsigned char* blk)
+void getAddr(unsigned int* addr, unsigned char* blk)
 {
     *addr = getFour(blk+7*8);
 }
@@ -122,16 +122,16 @@ unsigned char* getXILocationFromBuf(Buffer* buf, int i)
 {
     int blk_count;
     int blk_avail_count = 0;
-    
+
     for(blk_count = 0; blk_count < buf->numAllBlk; blk_count++)
     {
         if(ifUsingBlk(buf, blk_count))
             blk_avail_count++;
-        if(blk_avail_count*7 >= i)
+        if(blk_avail_count*7-1 >= i)
             break;
     }
 
-    int blk_in_addr = ((i - 1) % 7) * 8 + 1;
+    int blk_in_addr = (i % 7) * 8 + 1;
     int blk_addr = blk_count * (buf->blkSize + 1);
     return buf->data+blk_addr+blk_in_addr;
 }
@@ -150,7 +150,7 @@ void swapIJInBuf(Buffer* buf, int i, int j)
 {
     unsigned char* i_location = getXILocationFromBuf(buf, i);
     unsigned char* j_location = getXILocationFromBuf(buf, j);
-    
+
     int iX = getFour(i_location);
     int iY = getFour(i_location + 4);
 
@@ -162,7 +162,7 @@ void swapIJInBuf(Buffer* buf, int i, int j)
     return;
 }
 
-int writeAddrBlockToDisk(Buffer* buf, unsigned char* blk, int* write_blk)
+int writeAddrBlockToDisk(Buffer* buf, unsigned char* blk, unsigned int* write_blk)
 {
     if(writeAddr(*write_blk+1, blk) == -1)
     {
@@ -193,4 +193,34 @@ void writeToBlk(Buffer* buf, int X, int Y, unsigned char* blk, int* blk_count, u
         memset(blk, 0, buf->blkSize*sizeof(unsigned char));
         *blk_count = 0;
     }
+}
+
+unsigned char* getNextCouple(Buffer* buf, unsigned char* blk, int* count, int blk_end, unsigned int* blk_num)
+{
+    unsigned int addr;
+
+    // 当前块未比较完
+    if(*count < 6)
+    {
+        *count = *count + 1;
+        return blk;
+    }
+
+    // 获得下一个块
+    getAddr(&addr, blk);
+    if(addr <= blk_end)
+    {
+        freeBlockInBuffer(blk, buf);
+        blk = readBlockFromDisk(addr, buf);
+        *count = 0;
+        if(blk_num != NULL)
+        {
+            *blk_num = addr;
+        }
+        return blk;
+    }
+
+    // 比较完成所有
+    freeBlockInBuffer(blk, buf);
+    return NULL;
 }

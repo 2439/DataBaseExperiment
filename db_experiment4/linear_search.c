@@ -58,7 +58,7 @@ int findInBlk(int equal_num, unsigned int blk_num, Buffer* buf, unsigned char* r
     unsigned char* blk;
     int X, Y;
     int re_blk_count = *blk_count;
-    int addr;
+    unsigned int addr;
 
     printf("¶ÁÈëÊı¾İ¿é%d\n", blk_num);
     if((blk = readBlockFromDisk(blk_num, buf)) == NULL)

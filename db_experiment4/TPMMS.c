@@ -1,6 +1,6 @@
 #include "TPMMS.h"
 
-int TPMMS(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* write_blk)
+int TPMMS(Buffer* buf, unsigned int blk_start, unsigned int blk_end, unsigned int* write_blk)
 {
     unsigned int blk_num = blk_start;
     GroupList* head = (GroupList*) malloc(sizeof(GroupList));
@@ -10,7 +10,7 @@ int TPMMS(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* write_
     GroupList* small;
 
     printf("-----------------------------------------------\n");
-    printf("两阶段多路归并排序算法：数据块%d.blk到%d.blk\n", blk_start, blk_end);
+    printf("两阶段多路归并排序算法:从%d.blk块到%d.blk块\n", blk_start, blk_end);
     printf("-----------------------------------------------\n");
 
     // inline sorting
@@ -30,7 +30,7 @@ int TPMMS(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* write_
         // only one blk compare
         if(head->next == head)
         {
-            int addr;
+            unsigned int addr;
             writeBlkLastToBlkBuf(buf, head->blk, head->count, blk, &blk_count, write_blk);
             getAddr(&addr, head->blk);
             while(addr <= head->blk_end)
@@ -49,7 +49,7 @@ int TPMMS(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* write_
         writeAddrBlockToDisk(buf, blk, write_blk);
     }
 
-    printf("IO读写一共%ld次\n", buf->numIO);
+    printf("IO次数为%ld\n", buf->numIO);
     printf("\n");
     return 0;
 }
@@ -59,12 +59,12 @@ void inlineSort(Buffer* buf, unsigned int blk_num, unsigned int blk_end, GroupLi
     GroupList* temp = head;
     unsigned char* blk;
     unsigned int write_blk_temp = TPMMSWRITETEMP;
-    
+
     groupNodeInit(temp, write_blk_temp, head);
     while(blk_num != blk_end)
     {
         // read
-        printf("读入数据块%d\n", blk_num);
+        printf("读取数据块%d\n", blk_num);
         blk = readBlockFromDisk(blk_num, buf);
         getAddr(&blk_num, blk);
 
@@ -73,8 +73,7 @@ void inlineSort(Buffer* buf, unsigned int blk_num, unsigned int blk_end, GroupLi
         {
             inSort(buf, &write_blk_temp);
             freeAllBlockInBuffer(buf);
-            // temp->blk_end = blk_num + TPMMSWRITETEMP - 1 - 1;   // 201开始所以-1，full所以-1
-            temp->blk_end = write_blk_temp - 1;   // 201开始所以-1，full所以-1
+            temp->blk_end = write_blk_temp - 1;
             GroupList* node = (GroupList*)malloc(sizeof(GroupList));
             groupNodeInit(node, write_blk_temp, head);
             temp->next = node;
@@ -82,7 +81,7 @@ void inlineSort(Buffer* buf, unsigned int blk_num, unsigned int blk_end, GroupLi
         }
     }
     // the last inline Group
-    printf("读入数据块%d\n", blk_num);
+    printf("读取数据块%d\n", blk_num);
     blk = readBlockFromDisk(blk_num, buf);
     inSort(buf, &write_blk_temp);
     freeAllBlockInBuffer(buf);
@@ -123,6 +122,7 @@ int inSort(Buffer* buf, unsigned int* write_blk)
             writeAddrBlockToDisk(buf, getBlkFromBuf(buf, i), write_blk);
         }
     }
+    return 0;
 }
 
 void groupNodeInit(GroupList* node, unsigned int blk_num, GroupList* head)
@@ -137,12 +137,12 @@ void groupNodeInit(GroupList* node, unsigned int blk_num, GroupList* head)
 void mergeInit(Buffer* buf, GroupList* head)
 {
     GroupList* temp = head;
-    printf("读入数据块%d\n", temp->blk_start);
+    printf("读取数据块%d\n", temp->blk_start);
     temp->blk = readBlockFromDisk(temp->blk_start, buf);
     while(temp->next != head)
     {
         temp = temp->next;
-        printf("读入数据块%d\n", temp->blk_start);
+        printf("读取数据块%d\n", temp->blk_start);
         temp->blk = readBlockFromDisk(temp->blk_start, buf);
     }
 
@@ -178,28 +178,28 @@ GroupList* findSmall(Buffer* buf, GroupList* head, int* X, int* Y)
 
 void getNext(GroupList* small, Buffer* buf)
 {
-    int addr;
+    unsigned int addr;
     GroupList* temp;
 
-    // 当前块没比较完
+    // 当前块未完
     if(small->count < 6)
     {
         small->count++;
         return;
     }
-    
-    // 获得下一个块
+
+    // 读入下一块
     getAddr(&addr, small->blk);
     if(addr <= small->blk_end)
     {
         freeBlockInBuffer(small->blk, buf);
-        printf("读入数据块%d\n", addr);
+        printf("读取数据块%d\n", addr);
         small->blk = readBlockFromDisk(addr, buf);
         small->count = 0;
         return;
     }
 
-    // 该子集所有块比较完成，删除节点
+    // 子集结束，释放
     freeBlockInBuffer(small->blk, buf);
     temp = small;
     while(temp->next != small)
@@ -211,7 +211,7 @@ void getNext(GroupList* small, Buffer* buf)
     return;
 }
 
-void writeBlkLastToBlkBuf(Buffer* buf, unsigned char* src_blk, int src_blk_count, unsigned char* dst_blk, int* dst_blk_count, int* write_blk)
+void writeBlkLastToBlkBuf(Buffer* buf, unsigned char* src_blk, int src_blk_count, unsigned char* dst_blk, int* dst_blk_count, unsigned int* write_blk)
 {
     int X, Y;
     while(src_blk_count < 7)

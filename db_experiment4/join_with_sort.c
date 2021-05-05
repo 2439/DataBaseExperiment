@@ -1,6 +1,6 @@
 #include "join_with_sort.h"
 
-int joinWithSort(Buffer* buf, unsigned int R_start, unsigned int R_end, unsigned int S_start, unsigned int S_end, int* write_blk)
+int joinWithSort(Buffer* buf, unsigned int R_start, unsigned int R_end, unsigned int S_start, unsigned int S_end, unsigned int* write_blk)
 {
     unsigned char* blk_R;
     unsigned char* blk_S;
@@ -35,7 +35,7 @@ int joinWithSort(Buffer* buf, unsigned int R_start, unsigned int R_end, unsigned
         // RX < SX，R go next, update R_begin
         if(RX < SX)
         {
-            blk_R = getNextInJoin(buf, blk_R, &R_count, R_end, &R_num);
+            blk_R = getNextCouple(buf, blk_R, &R_count, R_end, &R_num);
             R_begin = R_num;
             R_begin_i = R_count;
         }
@@ -45,7 +45,29 @@ int joinWithSort(Buffer* buf, unsigned int R_start, unsigned int R_end, unsigned
             writeToBlk(buf, SX, SY, blk, &blk_count, write_blk);
             writeToBlk(buf, RX, RY, blk, &blk_count, write_blk);
             join_count++;
-            blk_R = getNextInJoin(buf, blk_R, &R_count, R_end, &R_num);
+            blk_R = getNextCouple(buf, blk_R, &R_count, R_end, &R_num);
+
+            if(blk_R == NULL)
+            {
+                int tempX, tempY;
+                blk_S = getNextCouple(buf, blk_S, &S_count, S_end, NULL);
+                if(blk_S == NULL)
+                    break;
+                getXY(&tempX, &tempY, blk_S, S_count);
+
+                // R turn to R_begin
+                if(tempX == SX)
+                {
+                    blk_R = readBlockFromDisk(R_begin, buf);
+                    R_count = R_begin_i;
+                    R_num = R_begin;
+                }
+                // R_begin turn to R
+                else
+                {
+                    break;
+                }
+            }
         }
         // RX > SX, S to next
         // if SX don't change, R turn to R_begin
@@ -53,7 +75,7 @@ int joinWithSort(Buffer* buf, unsigned int R_start, unsigned int R_end, unsigned
         else
         {
             int tempX, tempY;
-            blk_S = getNextInJoin(buf, blk_S, &S_count, S_end, NULL);
+            blk_S = getNextCouple(buf, blk_S, &S_count, S_end, NULL);
             if(blk_S == NULL)
                 break;
             getXY(&tempX, &tempY, blk_S, S_count);
@@ -81,36 +103,8 @@ int joinWithSort(Buffer* buf, unsigned int R_start, unsigned int R_end, unsigned
             }
         }
     }
+
     printf("总共连接%d次\n", join_count);
     printf("\n");
     return 0;
-}
-
-unsigned char* getNextInJoin(Buffer* buf, unsigned char* blk, int* count, int blk_end, unsigned int* blk_num)
-{
-    int addr;
-
-    // 当前块未比较完
-    if(*count < 6)
-    {
-        *count = *count + 1;
-        return blk;
-    }
-
-    // 获得下一个块
-    getAddr(&addr, blk);
-    if(addr <= blk_end)
-    {
-        freeBlockInBuffer(blk, buf);
-        blk = readBlockFromDisk(addr, buf);
-        *count = 0;
-        if(blk_num != NULL)
-        {
-            *blk_num = addr;
-        }
-        return blk;
-    }
-
-    // 比较完成所有
-    return NULL;
 }

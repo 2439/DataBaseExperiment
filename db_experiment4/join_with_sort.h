@@ -7,28 +7,16 @@
 #include "extmem.h"
 #include "base.h"
 
-/** \brief åŸºäºæ’åºç»“æœçš„è¿æ¥æ“ä½œ
+/** \brief »ùÓÚÅÅĞò½á¹ûµÄÁ¬½Ó²Ù×÷
  *
- * \param bufï¼šç¼“å­˜åŒºæŒ‡é’ˆ
- * \param R_start: è¡¨Rå—å¼€å§‹åœ°å€ï¼Œè¡¨Rä¸ºè¢«è¿æ¥
- * \param R_end: è¡¨Rå—å—ç»“æŸåœ°å€
- * \param S_start: è¡¨Så—å¼€å§‹åœ°å€ï¼Œè¡¨Sä¸ºè¿æ¥
- * \param S_end: è¡¨Så—å—ç»“æŸåœ°å€
- * \param write_blk: ç»“æœå†™å…¥å¼€å§‹åœ°å€
- * \return ä¿å­˜æˆåŠŸè¿”å›0ï¼Œå¤±è´¥è¿”å›-1
- *
- */
-int joinWithSort(Buffer* buf, unsigned int R_start, unsigned int R_end, unsigned int S_start, unsigned int S_end, int* write_blk);
-
-/** \brief è·å¾—blkå¯¹åº”çš„ä¸‹ä¸€ä¸ªå…ƒç»„ï¼Œå¦‚æœå—æœ‰æ›´æ–°ï¼Œä¸”blk_numä¸ä¸ºNULLï¼Œåˆ™blk_numä¸ºæ›´æ–°åblkä½ç½®
- *
- * \param bufï¼šç¼“å­˜åŒºæŒ‡é’ˆ
- * \param blkï¼šå—æŒ‡é’ˆ
- * \param countï¼šå…ƒç»„åœ¨å—å†…ä½ç½®
- * \param blk_endï¼šå­é›†æœ€åä¸€å—ä½ç½®
- * \param blk_numï¼šå½“å‰å—çš„ä½ç½®
- * \return è¿”å›æ›´æ–°åå—ä½ç½®
+ * \param buf£º»º´æÇøÖ¸Õë
+ * \param R_start: ±íR¿é¿ªÊ¼µØÖ·£¬±íRÎª±»Á¬½Ó
+ * \param R_end: ±íR¿é¿é½áÊøµØÖ·
+ * \param S_start: ±íS¿é¿ªÊ¼µØÖ·£¬±íSÎªÁ¬½Ó
+ * \param S_end: ±íS¿é¿é½áÊøµØÖ·
+ * \param write_blk: ½á¹ûĞ´Èë¿ªÊ¼µØÖ·
+ * \return ±£´æ³É¹¦·µ»Ø0£¬Ê§°Ü·µ»Ø-1
  *
  */
-unsigned char* getNextInJoin(Buffer* buf, unsigned char* blk, int* count, int blk_end, unsigned int* blk_num);
+int joinWithSort(Buffer* buf, unsigned int R_start, unsigned int R_end, unsigned int S_start, unsigned int S_end, unsigned int* write_blk);
 #endif // LINEARSEARCH_H_INCLUDED

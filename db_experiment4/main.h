@@ -8,12 +8,16 @@
 #include "TPMMS.h"
 #include "index_search.h"
 #include "join_with_sort.h"
+#include "set_operation.h"
 
 #define LINEARSEARCHWRITEBLK 101
 #define TPMMSWRITEBLK 201
 #define INDEXBLK 301
-#define INDEXSEARCHBLK 351 
+#define INDEXSEARCHBLK 351
 #define JOINBLK 401
+#define UNIONBLK 501
+#define INTERSECTIONBLK 601
+#define MINUSBLK 701
 
 typedef struct table
 {
@@ -22,17 +26,17 @@ typedef struct table
 } Table;
 
 
-/** \brief 初始化R和S表的开始和结束数据块
+/** \brief 初始化表R，S
  *
- * \param R：R表
- * \param S：S表
+ * \param R：关系R
+ * \param S：关系S
  *
  */
 void initTableRS(Table* R, Table* S);
 
-/** \brief 打印菜单并选择算法
+/** \brief 打印菜单，获取选择
  *
- * \return 选择1-7，退出0，其余重新输入
+ * \return 返回选择，错误为-1
  *
  */
 int menuList();

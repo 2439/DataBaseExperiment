@@ -7,48 +7,48 @@
 #include "extmem.h"
 #include "base.h"
 
-/** \brief åŸºäºblk_startåˆ°blk_endä¹‹é—´å·²ç»æ’åºå¥½çš„Sè¡¨ï¼Œå»ºç«‹ç´¢å¼•æ–‡ä»¶åˆ°write_blk
+/** \brief »ùÓÚblk_startµ½blk_endÖ®¼äÒÑ¾­ÅÅĞòºÃµÄS±í£¬½¨Á¢Ë÷ÒıÎÄ¼şµ½write_blk
  *
- * \param bufï¼šç¼“å­˜åŒºæŒ‡é’ˆ
- * \param blk_start: å—å¼€å§‹åœ°å€
- * \param blk_end: å—ç»“æŸåœ°å€
- * \param write_blk: ç»“æœå†™å…¥å¼€å§‹åœ°å€
+ * \param buf£º»º´æÇøÖ¸Õë
+ * \param blk_start: ¿é¿ªÊ¼µØÖ·
+ * \param blk_end: ¿é½áÊøµØÖ·
+ * \param write_blk: ½á¹ûĞ´Èë¿ªÊ¼µØÖ·
  * \return
  *
  */
-void makeIndex(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* write_blk);
+void makeIndex(Buffer* buf, unsigned int blk_start, unsigned int blk_end, unsigned int* write_blk);
 
-/** \brief åŸºäºblk_startåˆ°blk_endä¹‹é—´çš„ç´¢å¼•æ–‡ä»¶ï¼ŒæŸ¥æ‰¾S.C=ï¼Œç»“æœå†™å…¥write_blkå—
+/** \brief »ùÓÚblk_startµ½blk_endÖ®¼äµÄË÷ÒıÎÄ¼ş£¬²éÕÒS.C=£¬½á¹ûĞ´Èëwrite_blk¿é
  *
- * \param bufï¼šç¼“å­˜åŒºæŒ‡é’ˆ
- * \param blk_start: å—å¼€å§‹åœ°å€
- * \param blk_end: å—ç»“æŸåœ°å€
- * \param write_blk: ç»“æœå†™å…¥å¼€å§‹åœ°å€
- * \return ä¿å­˜æˆåŠŸè¿”å›0ï¼Œå¤±è´¥è¿”å›-1
+ * \param buf£º»º´æÇøÖ¸Õë
+ * \param blk_start: ¿é¿ªÊ¼µØÖ·
+ * \param blk_end: ¿é½áÊøµØÖ·
+ * \param write_blk: ½á¹ûĞ´Èë¿ªÊ¼µØÖ·
+ * \return ±£´æ³É¹¦·µ»Ø0£¬Ê§°Ü·µ»Ø-1
  *
  */
-int indexSearch(Buffer* buf, unsigned int blk_start, unsigned int blk_end, int* write_blk);
+int indexSearch(Buffer* buf, unsigned int blk_start, unsigned int blk_end, unsigned int* write_blk);
 
-/** \brief æŸ¥æ‰¾å€¼å¤§äºç­‰äºequal_numçš„ç´¢å¼•å…ƒç»„ï¼Œå¦‚æœæ‰¾åˆ°è¿”å›1ï¼Œå¦åˆ™è¿”å›0
+/** \brief ²éÕÒÖµ´óÓÚµÈÓÚequal_numµÄË÷ÒıÔª×é£¬Èç¹ûÕÒµ½·µ»Ø1£¬·ñÔò·µ»Ø0
  *
- * \param bufï¼šç¼“å­˜åŒºæŒ‡é’ˆ
- * \param equal_numï¼šæ¯”è¾ƒçš„å€¼
- * \param blk_numï¼šæŸ¥æ‰¾çš„ç´¢å¼•å—
- * \return æ‰¾åˆ°è¿”å›1ï¼Œæ²¡æ‰¾åˆ°è¿”å›0ï¼Œé”™è¯¯è¿”å›-1
+ * \param buf£º»º´æÇøÖ¸Õë
+ * \param equal_num£º±È½ÏµÄÖµ
+ * \param blk_num£º²éÕÒµÄË÷Òı¿é
+ * \return ÕÒµ½·µ»Ø1£¬Ã»ÕÒµ½·µ»Ø0£¬´íÎó·µ»Ø-1
  *
  */
 int findIndexInBlk(int equal_num, unsigned int* blk_num, Buffer* buf);
 
-/** \brief åœ¨blk_numçš„å—ä¸­é¡ºåºæŸ¥æ‰¾å¹¶ä¿å­˜ç¬¬ä¸€ä¸ªå…ƒç´ ä¸ºequal_numï¼Œé‡åˆ°ä¸æ˜¯çš„å…ƒç»„è¿”å›0ï¼Œå¦åˆ™è¿”å›ä¸‹ä¸€å—åœ°å€
+/** \brief ÔÚblk_numµÄ¿éÖĞË³Ğò²éÕÒ²¢±£´æµÚÒ»¸öÔªËØÎªequal_num£¬Óöµ½²»ÊÇµÄÔª×é·µ»Ø0£¬·ñÔò·µ»ØÏÂÒ»¿éµØÖ·
  *
- * \param   equal_numï¼šç­‰äºçš„å€¼
- * \param   blk_numï¼šæŸ¥æ‰¾çš„å—
- * \param   buf:ç¼“å­˜åŒºæŒ‡é’ˆ
- * \param   re_blk:ç»“æœå—æŒ‡é’ˆ
- * \param   re_blk_count:ç»“æœå—å·²å­˜æ•°ç›®
- * \param   write_blk:å†™å…¥çš„ç£ç›˜åœ°å€
- * \param   count_numï¼šå·²æ‰¾åˆ°å…ƒç»„ç»Ÿè®¡
- * \return è¿”å›ä¸‹ä¸€å—åœ°å€ï¼Œï¼Œ é”™è¯¯è¿”å›-1
+ * \param   equal_num£ºµÈÓÚµÄÖµ
+ * \param   blk_num£º²éÕÒµÄ¿é
+ * \param   buf:»º´æÇøÖ¸Õë
+ * \param   re_blk:½á¹û¿éÖ¸Õë
+ * \param   re_blk_count:½á¹û¿éÒÑ´æÊıÄ¿
+ * \param   write_blk:Ğ´ÈëµÄ´ÅÅÌµØÖ·
+ * \param   count_num£ºÒÑÕÒµ½Ôª×éÍ³¼Æ
+ * \return ·µ»ØÏÂÒ»¿éµØÖ·£¬£¬ ´íÎó·µ»Ø-1
  *
  */
 int findInBlkWithSort(int equal_num, unsigned int blk_num, Buffer* buf, unsigned char* re_blk, int* re_blk_count, unsigned int* write_blk, int* count);

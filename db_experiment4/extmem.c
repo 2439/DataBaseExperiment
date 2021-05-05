@@ -12,8 +12,6 @@
 
 Buffer *initBuffer(size_t bufSize, size_t blkSize, Buffer *buf)
 {
-    int i;
-
     buf->numIO = 0;
     buf->bufSize = bufSize;
     buf->blkSize = blkSize;
@@ -93,9 +91,7 @@ unsigned char *readBlockFromDisk(unsigned int addr, Buffer *buf)
         perror("Buffer Overflows!\n");
         return NULL;
     }
-
     blkPtr = buf->data;
-
     while (blkPtr < buf->data + (buf->blkSize + 1) * buf->numAllBlk)
     {
         if (*blkPtr == BLOCK_AVAILABLE)
@@ -103,7 +99,6 @@ unsigned char *readBlockFromDisk(unsigned int addr, Buffer *buf)
         else
             blkPtr += buf->blkSize + 1;
     }
-
     sprintf(filename, "data/%d.blk", addr);
     FILE *fp = fopen(filename, "r");
 
@@ -148,7 +143,7 @@ int writeBlockToDisk(unsigned char *blkPtr, unsigned int addr, Buffer *buf)
         fputc((int)(*bytePtr), fp);
 
     fclose(fp);
-    *(blkPtr - 1) = BLOCK_AVAILABLE;//重新将块置为可用，特别要注意这里
+    *(blkPtr - 1) = BLOCK_AVAILABLE;
     buf->numFreeBlk++;
     buf->numIO++;
     return 0;

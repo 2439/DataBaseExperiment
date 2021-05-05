@@ -31,7 +31,7 @@ void getXY(int* X, int* Y, unsigned char* blk, int i);
  * \return
  *
  */
-void getAddr(int* addr, unsigned char* blk);
+void getAddr(unsigned int* addr, unsigned char* blk);
 
 /** \brief 从blk_begin的位置开始获得4字节的数据，每个字节代表一位数
  *
@@ -122,7 +122,7 @@ void swapIJInBuf(Buffer* buf, int i, int j);
  * \return 正确返回0，错误返回-1
  *
  */
-int writeAddrBlockToDisk(Buffer* buf, unsigned char* blk, int* write_blk);
+int writeAddrBlockToDisk(Buffer* buf, unsigned char* blk, unsigned int* write_blk);
 
 /** \brief 将X，Y写入blk，如果blk_count>=7即blk已满，则存入磁盘write_blk，获取新的blk
  *
@@ -136,4 +136,17 @@ int writeAddrBlockToDisk(Buffer* buf, unsigned char* blk, int* write_blk);
  *
  */
 void writeToBlk(Buffer* buf, int X, int Y, unsigned char* blk, int* blk_count, unsigned int* write_blk);
+
+/** \brief 获得blk对应的下一个元组，如果块有更新，且blk_num不为NULL，则blk_num为更新后blk位置
+ *
+ * \param buf：缓存区指针
+ * \param blk：块指针
+ * \param count：元组在块内位置
+ * \param blk_end：子集最后一块位置
+ * \param blk_num：当前块的位置
+ * \return 返回更新后块位置
+ *
+ */
+unsigned char* getNextCouple(Buffer* buf, unsigned char* blk, int* count, int blk_end, unsigned int* blk_num);
+
 #endif // BASE_H_INCLUDED
